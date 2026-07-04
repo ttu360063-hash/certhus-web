@@ -1299,7 +1299,7 @@ function adminLogout() {
 
 // ── Render card HTML ─────────────────────────────────────────────
 function cardHTML(p, showAdmin) {
-  const thumb = (p.images && p.images.length ? p.images[0] : p.img) || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=80';
+  const thumb = (p.cover ? p.cover : ((p.images && p.images.length ? p.images[0] : p.img))) || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=80';
   return `
     <div class="project-card reveal" style="background:${p.color}" data-id="${p.id}" onclick="openProjectDetails(${p.id})" role="button" tabindex="0" aria-label="Ver detalhes do projeto">
       <span style="position:absolute;inset:0;z-index:1" aria-hidden="true"></span>
@@ -1386,6 +1386,47 @@ function escapeHtml(str) {
 let edImages = []; // dataURLs
 let edVideos = []; // dataURLs (mp4)
 let edCoverIndex = null; // null => first image
+let edCoverData = null; // dataURL da capa (persistência explícita)
+
+function setCoverIndex(idx) {
+  edCoverIndex = (typeof idx === 'number' && idx >= 0) ? idx : null;
+  buildCoverSelect();
+}
+
+function buildCoverSelect() {
+  const wrap = document.getElementById('ed-cover-select');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  if (!edImages.length) {
+    wrap.innerHTML = '<span style="color:#6b7280;font-size:12px">Envie ao menos 1 imagem para definir capa.</span>';
+    return;
+  }
+
+  edImages.forEach((src, idx) => {
+    const isSelected = (edCoverIndex === null ? idx === 0 : idx === edCoverIndex);
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.style.width = '110px';
+    btn.style.height = '86px';
+    btn.style.borderRadius = '12px';
+    btn.style.border = isSelected ? '2px solid #60a5fa' : '1px solid #374151';
+    btn.style.background = 'rgba(255,255,255,0.06)';
+    btn.style.padding = '6px';
+    btn.style.cursor = 'pointer';
+    btn.style.overflow = 'hidden';
+
+    const img = document.createElement('img');
+    img.src = src;
+    img.style.width = '100%';
+    img.style.height = '100%';
+    img.style.objectFit = 'cover';
+    img.alt = 'Capa';
+
+    btn.onclick = () => setCoverIndex(idx);
+    btn.appendChild(img);
+    wrap.appendChild(btn);
+  });
+}
 
 function updateMediaPreview() {
   const preview = document.getElementById('ed-media-preview');
@@ -1559,6 +1600,7 @@ function openProjectDetails(id) {
     const videos = Array.isArray(p.videos) ? p.videos : [];
 
     imgWrap.innerHTML = '';
+    vidWrap.innerHTML = '';
     // render imagens
     const imgs = images.length ? images : (p.img ? [p.img] : []);
 
@@ -1613,6 +1655,14 @@ function closeProjectDetails() {
 }
 
 function saveProject() {
+  // garante capa persistida
+  if (edCoverIndex === null && edImages.length) {
+    edCoverData = edImages[0];
+  } else if (typeof edCoverIndex === 'number' && edImages[edCoverIndex]) {
+    edCoverData = edImages[edCoverIndex];
+  } else {
+    edCoverData = edCoverData || (edImages.length ? edImages[0] : null);
+  }
   const name = document.getElementById('ed-name').value.trim();
   const subtitle = document.getElementById('ed-subtitle').value.trim();
   if (!name || !subtitle) {
@@ -1627,6 +1677,7 @@ function saveProject() {
     description: document.getElementById('ed-description').value || '',
     images: edImages,
     videos: edVideos,
+    cover: edCoverData,
   };
   if (editingId !== null) {
     projects = projects.map(x => x.id === editingId ? p : x);
@@ -1651,6 +1702,7 @@ loadProjectsFromStorage();
 renderPortfolio();
 </script>
 <script src="./index_files/preview-script.js.download"></script><script src="./index_files/saved_resource"></script><script defer="" src="./index_files/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon="{&quot;version&quot;:&quot;2024.11.0&quot;,&quot;token&quot;:&quot;0bb311c0ca704ae4a40caad80bd8fb68&quot;,&quot;r&quot;:1,&quot;server_timing&quot;:{&quot;name&quot;:{&quot;cfCacheStatus&quot;:true,&quot;cfEdge&quot;:true,&quot;cfExtPri&quot;:true,&quot;cfL4&quot;:true,&quot;cfOrigin&quot;:true,&quot;cfSpeedBrain&quot;:true},&quot;location_startswith&quot;:null}}" crossorigin="anonymous"></script>
+
 
 
 </body></html>
