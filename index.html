@@ -1183,24 +1183,89 @@ let projects = [
 
 // ── Persistência local (para não perder alterações ao recarregar) ──
 const PROJECTS_STORAGE_KEY = 'certhus.projects.v1';
-function loadProjectsFromStorage() {
+// Persistência (upgrade seguro): IndexedDB (evita limite de localStorage entre abas)
+const PROJECTS_DB_NAME = 'certhus.projects.db';
+const PROJECTS_DB_VERSION = 1;
+const PROJECTS_STORE = 'projects';
+
+function openProjectsDB() {
+  return new Promise((resolve, reject) => {
+    if (!('indexedDB' in window)) return reject(new Error('IndexedDB indisponível'));
+    const req = indexedDB.open(PROJECTS_DB_NAME, PROJECTS_DB_VERSION);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains(PROJECTS_STORE)) {
+        db.createObjectStore(PROJECTS_STORE, { keyPath: 'id' });
+      }
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error || new Error('Erro ao abrir IndexedDB'));
+  });
+}
+
+async function loadProjectsFromStorage() {
+  // 1) tenta IndexedDB
+  try {
+    const db = await openProjectsDB();
+    const tx = db.transaction(PROJECTS_STORE, 'readonly');
+    const store = tx.objectStore(PROJECTS_STORE);
+    const allReq = store.getAll();
+
+    const parsed = await new Promise((resolve, reject) => {
+      allReq.onsuccess = () => resolve(allReq.result);
+      allReq.onerror = () => reject(allReq.error || new Error('Erro getAll IndexedDB'));
+    });
+
+    if (Array.isArray(parsed) && parsed.length) {
+      projects = parsed.filter(p => p && typeof p.id !== 'undefined' && typeof p.name === 'string');
+      return;
+    }
+  } catch (e) {
+    // segue para fallback localStorage
+  }
+
+  // 2) fallback localStorage (migração antiga)
   try {
     const raw = window.localStorage && window.localStorage.getItem(PROJECTS_STORAGE_KEY);
     if (!raw) return;
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) return;
-    // validação mínima
     projects = parsed.filter(p => p && typeof p.id !== 'undefined' && typeof p.name === 'string');
+
+    // migra para IndexedDB (melhorar persistência)
+    try {
+      const db = await openProjectsDB();
+      const tx = db.transaction(PROJECTS_STORE, 'readwrite');
+      const store = tx.objectStore(PROJECTS_STORE);
+      for (const p of projects) store.put(p);
+    } catch (_) {}
   } catch (e) {
-    // se der erro, mantém o array default
+    // mantém padrão
   }
 }
-function persistProjectsToStorage() {
+
+async function persistProjectsToStorage() {
+  // tenta IndexedDB
+  try {
+    const db = await openProjectsDB();
+    const tx = db.transaction(PROJECTS_STORE, 'readwrite');
+    const store = tx.objectStore(PROJECTS_STORE);
+    await new Promise((resolve, reject) => {
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error || new Error('Erro transaction IndexedDB'));
+      tx.onabort = () => reject(tx.error || new Error('Abort transaction IndexedDB'));
+      projects.forEach(p => store.put(p));
+    });
+    return;
+  } catch (e) {
+    // fallback localStorage (pode falhar se mídias grandes)
+  }
+
   try {
     if (!window.localStorage) return;
     window.localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(projects));
   } catch (e) {
-    // ignorar (ex: storage cheio / bloqueado)
+    // ignorar
   }
 }
 
@@ -1582,6 +1647,23 @@ function closeEditor() {
 
 function openProjectDetails(id) {
   try {
+    const imgsWrap = document.getElementById('pd-images');
+    const vidsWrap = document.getElementById('pd-videos');
+    if (imgsWrap) {
+      imgsWrap.style.display = 'flex';
+      imgsWrap.style.flexWrap = 'wrap';
+      imgsWrap.style.justifyContent = 'center';
+      imgsWrap.style.alignItems = 'flex-start';
+      imgsWrap.style.gap = '12px';
+    }
+    if (vidsWrap) {
+      vidsWrap.style.display = 'flex';
+      vidsWrap.style.flexWrap = 'wrap';
+      vidsWrap.style.justifyContent = 'center';
+      vidsWrap.style.alignItems = 'flex-start';
+      vidsWrap.style.gap = '12px';
+    }
+
     const p = projects.find(x => x.id === id);
     if (!p) return;
 
@@ -1698,8 +1780,10 @@ function deleteProject(id) {
 }
 
 // ── Init ─────────────────────────────────────────────────────────
-loadProjectsFromStorage();
-renderPortfolio();
+(async function () {
+  await loadProjectsFromStorage();
+  renderPortfolio();
+})();
 </script>
 <script src="./index_files/preview-script.js.download"></script><script src="./index_files/saved_resource"></script><script defer="" src="./index_files/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon="{&quot;version&quot;:&quot;2024.11.0&quot;,&quot;token&quot;:&quot;0bb311c0ca704ae4a40caad80bd8fb68&quot;,&quot;r&quot;:1,&quot;server_timing&quot;:{&quot;name&quot;:{&quot;cfCacheStatus&quot;:true,&quot;cfEdge&quot;:true,&quot;cfExtPri&quot;:true,&quot;cfL4&quot;:true,&quot;cfOrigin&quot;:true,&quot;cfSpeedBrain&quot;:true},&quot;location_startswith&quot;:null}}" crossorigin="anonymous"></script>
 
