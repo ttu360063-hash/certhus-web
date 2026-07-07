@@ -1779,7 +1779,6 @@ async function saveProject() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'apikey': SUPABASE_ANON_KEY,
         'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
       },
       body: JSON.stringify(payload),
@@ -1811,8 +1810,7 @@ async function deleteProject(id) {
     const res = await fetch(SUPABASE_URL + '/functions/v1/upload-project-media', {
       method: 'POST',
       headers: {
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
       },
       body: JSON.stringify({ action: 'delete', id: id }),
     });
