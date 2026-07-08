@@ -1783,10 +1783,8 @@ function closeProjectDetails() {
 }
 
 async function saveProject() {
-  // Simplificado: sem upload/mídia. Admin atualiza apenas campos de texto e arrays
-  // que já estejam sendo usados pelo frontend: tags, cover_url/image_urls/video_urls.
-  // Para isso, este editor atual precisa receber URLs no editor; como hoje ele usa upload,
-  // vamos manter o editor funcionando mas SEM enviar mídia. 
+  // Upload + persistência via Edge Function (não via REST)
+  // Isso evita erro de RLS/Permissões no frontend.
 
   const name = document.getElementById('ed-name').value.trim();
   const subtitle = document.getElementById('ed-subtitle').value.trim();
@@ -1795,65 +1793,49 @@ async function saveProject() {
     return;
   }
 
-  // Se você não tiver um editor para URLs, essas mídias ficam como “vazias” ao atualizar.
-  // Isso evita falhas de upload/cors/edge.
   const description = document.getElementById('ed-description').value || '';
   const icon = document.getElementById('ed-icon').value || '🔵';
   const color = edColor;
   const tags = edTags;
 
-  // Mantém cover_url/imagens/vídeos atuais quando editando; caso contrário deixa null.
-  const existing = (editingId !== null) ? projects.find(p => String(p.id) === String(editingId)) : null;
-  const cover_url = existing ? existing.cover : null;
-  const image_urls = existing ? existing.images : [];
-  const video_urls = existing ? existing.videos : [];
+  // cover_idx: índice da capa dentro de images[]
+  // Quando edCoverIndex === null => primeira imagem
+  const cover_idx = (typeof edCoverIndex === 'number' && edCoverIndex >= 0) ? edCoverIndex : 0;
 
-  const patch = {
+  const images = (Array.isArray(edImages) ? edImages : []);
+  const videos = (Array.isArray(edVideos) ? edVideos : []);
+
+  const payload = {
+    action: editingId !== null ? 'update' : 'create',
+    id: editingId !== null ? editingId : null,
     name,
     subtitle,
     description,
     icon,
     color,
     tags,
-    cover_url,
-    image_urls,
-    video_urls,
-    updated_at: new Date().toISOString(),
+    images,
+    videos,
+    cover_idx,
   };
 
   try {
-    if (editingId !== null) {
-      // update
-      const url = `${SUPABASE_URL}/rest/v1/${PROJECTS_TABLE}?id=eq.${encodeURIComponent(editingId)}`;
-      const res = await fetch(url, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
-          Prefer: 'return=representation',
-        },
-        body: JSON.stringify(patch),
-      });
-      if (!res.ok) throw new Error('Falha ao atualizar: ' + res.status);
-    } else {
-      // create
-      const url = `${SUPABASE_URL}/rest/v1/${PROJECTS_TABLE}`;
-      const createBody = {
-        ...patch,
-        // id será gerado pelo DB se for uuid default
-      };
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
-          Prefer: 'return=representation',
-        },
-        body: JSON.stringify(createBody),
-      });
-      if (!res.ok) throw new Error('Falha ao criar: ' + res.status);
+    document.getElementById('editor-error').textContent = '';
+
+    const res = await fetch(SUPABASE_URL + '/functions/v1/upload-project-media', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // publishable (anon) pode ser exigido; Edge Function deve validar do lado dela.
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const t = await res.text().catch(() => '');
+      throw new Error('Edge Function falhou: ' + res.status + (t ? (' - ' + t) : ''));
     }
 
     await fetchProjectsFromSupabase();
@@ -1862,32 +1844,39 @@ async function saveProject() {
     if (document.getElementById('all-projects-modal').classList.contains('show')) renderApm();
   } catch (e) {
     console.error(e);
-    document.getElementById('editor-error').textContent = 'Erro ao salvar. Verifique RLS/Permissões na tabela.';
+    document.getElementById('editor-error').textContent = 'Erro ao salvar. Verifique Edge Function, CORS e permissões.';
   }
 }
 
 async function deleteProject(id) {
   if (!confirm('Excluir este projeto?')) return;
   try {
-    const url = `${SUPABASE_URL}/rest/v1/${PROJECTS_TABLE}?id=eq.${encodeURIComponent(id)}`;
-    const res = await fetch(url, {
-      method: 'DELETE',
+    const payload = { action: 'delete', id };
+
+    const res = await fetch(SUPABASE_URL + '/functions/v1/upload-project-media', {
+      method: 'POST',
       headers: {
+        'Content-Type': 'application/json',
         apikey: SUPABASE_ANON_KEY,
         Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
-        Prefer: 'return=representation',
       },
+      body: JSON.stringify(payload),
     });
-    if (!res.ok) throw new Error('Falha ao excluir: ' + res.status);
+
+    if (!res.ok) {
+      const t = await res.text().catch(() => '');
+      throw new Error('Edge Function falhou: ' + res.status + (t ? (' - ' + t) : ''));
+    }
 
     await fetchProjectsFromSupabase();
     renderPortfolio();
     if (document.getElementById('all-projects-modal').classList.contains('show')) renderApm();
   } catch (e) {
-    alert('Erro ao excluir projeto. Verifique RLS/Permissões da tabela.');
+    alert('Erro ao excluir projeto. Verifique Edge Function, CORS e permissões.');
     console.error(e);
   }
 }
+
 
 
 
