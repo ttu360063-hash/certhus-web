@@ -1175,11 +1175,66 @@ const COLORS = [
   { label: "Esmeralda/Cinza",value:"linear-gradient(135deg,#064e3b,#030712)",  cls: "#064e3b" },
 ];
 
+// Fallback local (caso Supabase falhe)
 let projects = [
   { id:1, name:"CONNECT+",  subtitle:"Plataforma de Gestão Empresarial",     tags:["Sistema Web","Gestão"],   color:COLORS[0].value, icon:"🔵", img:"https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80" },
   { id:2, name:"FITZONE",   subtitle:"Aplicativo de Treinos e Desempenho",   tags:["Aplicativo","Saúde"],     color:COLORS[1].value, icon:"🏋️", img:"https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=600&q=80" },
   { id:3, name:"SMARTFLOW", subtitle:"Automação de Processos Industriais",   tags:["Automação","Indústria"],  color:COLORS[2].value, icon:"⚙️", img:"https://images.unsplash.com/photo-1518432031352-d6fc5734fa38?w=600&q=80" },
 ];
+
+// Supabase (somente leitura no frontend)
+const SUPABASE_URL = 'https://lmcbmdijvkswnrjrjmvy.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_UPNjwsZ7AhP-ZfGlO-1gQA_lnanjr6-';
+const PROJECTS_TABLE = 'projects';
+
+function normalizeJsonArray(v) {
+  if (Array.isArray(v)) return v;
+  if (typeof v === 'string') {
+    try {
+      const parsed = JSON.parse(v);
+      if (Array.isArray(parsed)) return parsed;
+    } catch (_) {}
+  }
+  return [];
+}
+
+function normalizeProjectFromDB(p) {
+  if (!p) return null;
+  const image_urls = normalizeJsonArray(p.image_urls);
+  const video_urls = normalizeJsonArray(p.video_urls);
+  const tags = normalizeJsonArray(p.tags);
+  const cover_url = p.cover_url || (image_urls.length ? image_urls[0] : null);
+
+  return {
+    id: p.id,
+    name: p.name || '',
+    subtitle: p.subtitle || '',
+    description: p.description || '',
+    icon: p.icon || '🔵',
+    color: p.color || COLORS[0].value,
+    tags,
+    img: cover_url,
+    cover: cover_url,
+    images: image_urls,
+    videos: video_urls,
+  };
+}
+
+async function loadProjectsFromSupabase() {
+  const url = `${SUPABASE_URL}/rest/v1/${PROJECTS_TABLE}?select=id,name,subtitle,description,icon,color,tags,cover_url,image_urls,video_urls&order=created_at.desc`;
+  const res = await fetch(url, {
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+      'Content-Type': 'application/json',
+    }
+  });
+  if (!res.ok) throw new Error(`Supabase REST error: ${res.status}`);
+  const data = await res.json();
+  if (!Array.isArray(data)) return;
+  projects = data.map(normalizeProjectFromDB).filter(Boolean);
+}
+
 
 // ── Supabase (projetos persistidos no banco; mídia via Storage) ──
 // Padrão (confirmado): bucket=project-media, tabela=projects
@@ -1737,56 +1792,77 @@ function closeProjectDetails() {
 }
 
 async function saveProject() {
-  // CRUD via Edge Function (admin). Remove/ignora persistência local.
-  // Exige que você tenha criado a Edge Function com o padrão:
-  // POST https://lmcbmdijvkswnrjrjmvy.supabase.co/functions/v1/upload-project-media
-  // (que deve suportar action=create|update)
+  // Simplificado: sem upload/mídia. Admin atualiza apenas campos de texto e arrays
+  // que já estejam sendo usados pelo frontend: tags, cover_url/image_urls/video_urls.
+  // Para isso, este editor atual precisa receber URLs no editor; como hoje ele usa upload,
+  // vamos manter o editor funcionando mas SEM enviar mídia. 
 
-  // garante capa persistida
-  if (edCoverIndex === null && edImages.length) {
-    edCoverData = edImages[0];
-  } else if (typeof edCoverIndex === 'number' && edImages[edCoverIndex]) {
-    edCoverData = edImages[edCoverIndex];
-  } else {
-    edCoverData = edCoverData || (edImages.length ? edImages[0] : null);
-  }
   const name = document.getElementById('ed-name').value.trim();
   const subtitle = document.getElementById('ed-subtitle').value.trim();
   if (!name || !subtitle) {
     document.getElementById('editor-error').textContent = '* Nome e Subtítulo são obrigatórios.';
     return;
   }
-  const payload = {
-    action: (editingId !== null ? 'update' : 'create'),
-    id: editingId,
+
+  // Se você não tiver um editor para URLs, essas mídias ficam como “vazias” ao atualizar.
+  // Isso evita falhas de upload/cors/edge.
+  const description = document.getElementById('ed-description').value || '';
+  const icon = document.getElementById('ed-icon').value || '🔵';
+  const color = edColor;
+  const tags = edTags;
+
+  // Mantém cover_url/imagens/vídeos atuais quando editando; caso contrário deixa null.
+  const existing = (editingId !== null) ? projects.find(p => String(p.id) === String(editingId)) : null;
+  const cover_url = existing ? existing.cover : null;
+  const image_urls = existing ? existing.images : [];
+  const video_urls = existing ? existing.videos : [];
+
+  const patch = {
     name,
     subtitle,
-    description: document.getElementById('ed-description').value || '',
-    icon: document.getElementById('ed-icon').value || '🔵',
-    color: edColor,
-    tags: edTags,
-    cover_url: edCoverData, // Edge Function pode ignorar se usar upload
-    // Atenção: neste código enviamos DataURL para a Edge Function.
-    // A Edge Function deve decodificar e salvar no Storage.
-    images: edImages,
-    videos: edVideos,
-    // cover_idx: opcional - se sua função suportar.
-    cover_idx: (edCoverIndex === null ? 0 : edCoverIndex),
+    description,
+    icon,
+    color,
+    tags,
+    cover_url,
+    image_urls,
+    video_urls,
+    updated_at: new Date().toISOString(),
   };
 
   try {
-    const res = await fetch(SUPABASE_URL + '/functions/v1/upload-project-media', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-      },
-      body: JSON.stringify(payload),
-    });
-
-    if (!res.ok) {
-      const txt = await res.text().catch(() => '');
-      throw new Error('Falha ao salvar: ' + res.status + ' ' + txt);
+    if (editingId !== null) {
+      // update
+      const url = `${SUPABASE_URL}/rest/v1/${PROJECTS_TABLE}?id=eq.${encodeURIComponent(editingId)}`;
+      const res = await fetch(url, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
+          Prefer: 'return=representation',
+        },
+        body: JSON.stringify(patch),
+      });
+      if (!res.ok) throw new Error('Falha ao atualizar: ' + res.status);
+    } else {
+      // create
+      const url = `${SUPABASE_URL}/rest/v1/${PROJECTS_TABLE}`;
+      const createBody = {
+        ...patch,
+        // id será gerado pelo DB se for uuid default
+      };
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
+          Prefer: 'return=representation',
+        },
+        body: JSON.stringify(createBody),
+      });
+      if (!res.ok) throw new Error('Falha ao criar: ' + res.status);
     }
 
     await fetchProjectsFromSupabase();
@@ -1795,36 +1871,33 @@ async function saveProject() {
     if (document.getElementById('all-projects-modal').classList.contains('show')) renderApm();
   } catch (e) {
     console.error(e);
-    document.getElementById('editor-error').textContent = 'Erro ao salvar. Verifique Edge Function/RLS/Storage.';
+    document.getElementById('editor-error').textContent = 'Erro ao salvar. Verifique RLS/Permissões na tabela.';
   }
 }
 
 async function deleteProject(id) {
   if (!confirm('Excluir este projeto?')) return;
-
-  // Importante: handler de delete deve apagar arquivos no Storage também.
-
-
   try {
-    // Edge Function deve suportar ação delete.
-    const res = await fetch(SUPABASE_URL + '/functions/v1/upload-project-media', {
-      method: 'POST',
+    const url = `${SUPABASE_URL}/rest/v1/${PROJECTS_TABLE}?id=eq.${encodeURIComponent(id)}`;
+    const res = await fetch(url, {
+      method: 'DELETE',
       headers: {
-'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
+        Prefer: 'return=representation',
       },
-      body: JSON.stringify({ action: 'delete', id: id }),
     });
-
-    if (!res.ok) throw new Error('Falha ao excluir');
+    if (!res.ok) throw new Error('Falha ao excluir: ' + res.status);
 
     await fetchProjectsFromSupabase();
     renderPortfolio();
     if (document.getElementById('all-projects-modal').classList.contains('show')) renderApm();
   } catch (e) {
-    alert('Erro ao excluir projeto. Verifique RLS/Edge Function.');
+    alert('Erro ao excluir projeto. Verifique RLS/Permissões da tabela.');
     console.error(e);
   }
 }
+
 
 
 // ── Init ─────────────────────────────────────────────────────────
