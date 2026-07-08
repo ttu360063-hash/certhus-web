@@ -1183,9 +1183,8 @@ let projects = [
 ];
 
 // Supabase (somente leitura no frontend)
-const SUPABASE_URL = 'https://lmcbmdijvkswnrjrjmvy.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_UPNjwsZ7AhP-ZfGlO-1gQA_lnanjr6-';
-const PROJECTS_TABLE = 'projects';
+// (Variáveis declaradas depois; manter apenas uma fonte de verdade)
+
 
 function normalizeJsonArray(v) {
   if (Array.isArray(v)) return v;
@@ -1220,20 +1219,12 @@ function normalizeProjectFromDB(p) {
   };
 }
 
+// (Deprecated) loadProjectsFromSupabase mantida para compatibilidade.
+// A implementação real usada abaixo é fetchProjectsFromSupabase().
 async function loadProjectsFromSupabase() {
-  const url = `${SUPABASE_URL}/rest/v1/${PROJECTS_TABLE}?select=id,name,subtitle,description,icon,color,tags,cover_url,image_urls,video_urls&order=created_at.desc`;
-  const res = await fetch(url, {
-    headers: {
-      apikey: SUPABASE_ANON_KEY,
-      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-      'Content-Type': 'application/json',
-    }
-  });
-  if (!res.ok) throw new Error(`Supabase REST error: ${res.status}`);
-  const data = await res.json();
-  if (!Array.isArray(data)) return;
-  projects = data.map(normalizeProjectFromDB).filter(Boolean);
+  return fetchProjectsFromSupabase();
 }
+
 
 
 // ── Supabase (projetos persistidos no banco; mídia via Storage) ──
