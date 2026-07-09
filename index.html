@@ -1829,6 +1829,7 @@ async function saveProject() {
         // publishable (anon) pode ser exigido; Edge Function deve validar do lado dela.
         apikey: SUPABASE_ANON_KEY,
         Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
+        'x-admin-secret': 'sb_secret_0_67XOsyy_-YftuL8PxqtA_tmlKiqbS',
       },
       body: JSON.stringify(payload),
     });
