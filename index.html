@@ -1309,6 +1309,50 @@ function normalizeProjectFromDB(p) {
   };
 }
 
+function applyLocalOverrides() {
+  const key = 'certhus.projects.localOverrides.v1';
+  const raw = localStorage.getItem(key);
+  if (!raw) return;
+
+  let arr;
+  try { arr = JSON.parse(raw); } catch (_) { arr = null; }
+  if (!Array.isArray(arr) || arr.length === 0) return;
+
+  // Normaliza para o mesmo formato do cardHTML/openProjectDetails
+  const localProjects = arr
+    .map(x => {
+      if (!x || (x.id === undefined || x.id === null)) return null;
+      const id = x.id;
+      return {
+        id,
+        name: x.name || '',
+        subtitle: x.subtitle || '',
+        description: x.description || '',
+        icon: x.icon || '🔵',
+        color: x.color || COLORS[0].value,
+        tags: Array.isArray(x.tags) ? x.tags : [],
+        img: x.cover_url || null,
+        cover: x.cover_url || null,
+        // Como removemos data: por quota, local pode não ter imagens/videos persistidas.
+        images: Array.isArray(x.image_urls) ? x.image_urls : [],
+        videos: Array.isArray(x.video_urls) ? x.video_urls : [],
+      };
+    })
+    .filter(Boolean);
+
+  const map = new Map();
+  projects.forEach(p => map.set(String(p.id), p));
+
+  // override/merge
+  localProjects.forEach(lp => {
+    const k = String(lp.id);
+    if (map.has(k)) map.set(k, { ...map.get(k), ...lp });
+    else map.set(k, lp);
+  });
+
+  projects = Array.from(map.values());
+}
+
 async function fetchProjectsFromSupabase() {
   // Visitante comum também precisa enxergar: RLS deve permitir SELECT.
   const url = new URL(PROJECTS_LIST_ENDPOINT);
@@ -1325,6 +1369,9 @@ async function fetchProjectsFromSupabase() {
   const data = await res.json();
   const list = Array.isArray(data) ? data.map(normalizeProjectFromDB).filter(Boolean) : [];
   projects = list;
+
+  // aplica overrides locais por cima do que veio do Supabase
+  applyLocalOverrides();
 }
 
 function showAllProjects() {
