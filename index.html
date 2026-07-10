@@ -1978,6 +1978,8 @@ async function deleteProject(id) {
     // Se a tabela ainda não estiver pronta / RLS bloquear, mantém fallback local do array inicial.
     console.warn('Supabase: não foi possível carregar projetos', e);
   }
+  // Garante que o modal Gerenciar Projetos sempre reflita overrides locais.
+  try { applyLocalOverrides(); } catch (_) {}
   renderPortfolio();
 })();
 </script>
