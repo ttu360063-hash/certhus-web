@@ -1869,10 +1869,6 @@ function closeProjectDetails() {
 }
 
 async function saveProject() {
-  // Fluxo mais simples e sem dor de cabeça:
-  // salvar apenas em LocalStorage para o preview e exibição funcionarem imediatamente.
-  // (A lista principal já vem de ./projects.json; aqui substituímos via cache local.)
-
   const name = document.getElementById('ed-name').value.trim();
   const subtitle = document.getElementById('ed-subtitle').value.trim();
   if (!name || !subtitle) {
@@ -1883,92 +1879,87 @@ async function saveProject() {
   const description = document.getElementById('ed-description').value || '';
   const icon = document.getElementById('ed-icon').value || '🔵';
   const color = edColor;
-  const tags = edTags;
+  const tags = Array.isArray(edTags) ? edTags : [];
 
   const cover_idx = (typeof edCoverIndex === 'number' && edCoverIndex >= 0) ? edCoverIndex : 0;
   const images = Array.isArray(edImages) ? edImages : [];
   const videos = Array.isArray(edVideos) ? edVideos : [];
-  const cover_url = images[cover_idx] || images[0] || null;
 
-  const p = {
-    id: editingId !== null ? editingId : Date.now(),
+  const action = editingId !== null ? 'update' : 'create';
+  const id = editingId !== null ? editingId : null;
+
+  const payload = {
+    action,
+    id,
     name,
     subtitle,
     description,
     icon,
     color,
     tags,
-    image_urls: images,
-    video_urls: videos,
-    cover_url,
+    images,
+    videos,
+    cover_idx,
   };
 
+  document.getElementById('editor-error').textContent = '';
+
   try {
-    const key = 'certhus.projects.localOverrides.v1';
-    const raw = localStorage.getItem(key);
-    const arr = raw ? JSON.parse(raw) : [];
-    const list = Array.isArray(arr) ? arr : [];
+    const res = await fetch(SUPABASE_URL + '/functions/v1/upload-project-media', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
+      },
+      body: JSON.stringify(payload),
+    });
 
-    // IMPORTANTE: localStorage tem cota pequena.
-    // DataURLs de imagens/vídeos estouram a cota.
-    // Então persistimos somente metadados/texto + capa/video/imagens
-    // (para este modo simples, manteremos somente URLs baseadas em seleção.
-    // Se for DataURL, a renderização pode funcionar só na sessão, mas não persiste.)
-    const pToStore = {
-      id: p.id,
-      name: p.name,
-      subtitle: p.subtitle,
-      description: p.description,
-      icon: p.icon,
-      color: p.color,
-      tags: p.tags,
-      cover_url: p.cover_url,
-      // Persistimos apenas strings curtas. Se for dataURL muito grande, removemos.
-      image_urls: (Array.isArray(p.image_urls) ? p.image_urls.filter(x => typeof x === 'string' && !x.startsWith('data:')) : []),
-      video_urls: (Array.isArray(p.video_urls) ? p.video_urls.filter(x => typeof x === 'string' && !x.startsWith('data:')) : []),
-    };
-
-    if (editingId !== null) {
-      const idx = list.findIndex(x => String(x.id) === String(editingId));
-      if (idx >= 0) list[idx] = pToStore;
-      else list.push(pToStore);
-    } else {
-      list.push(pToStore);
+    if (!res.ok) {
+      const t = await res.text().catch(() => '');
+      throw new Error('Edge Function falhou: ' + res.status + (t ? (' - ' + t) : ''));
     }
 
-    localStorage.setItem(key, JSON.stringify(list));
-
-    // Atualiza tela usando projetos atuais carregados (e aplica overrides)
     await fetchProjectsFromSupabase();
     closeEditor();
     renderPortfolio();
     if (document.getElementById('all-projects-modal').classList.contains('show')) renderApm();
   } catch (e) {
     console.error(e);
-    document.getElementById('editor-error').textContent = 'Erro ao salvar no LocalStorage.';
+    document.getElementById('editor-error').textContent = 'Erro ao salvar: verifique Edge Function/CORS/RLS e tente novamente.';
   }
 }
 
 
+
 async function deleteProject(id) {
   if (!confirm('Excluir este projeto?')) return;
-  try {
-    const key = 'certhus.projects.localOverrides.v1';
-    const raw = localStorage.getItem(key);
-    const arr = raw ? JSON.parse(raw) : [];
-    const list = Array.isArray(arr) ? arr : [];
 
-    const filtered = list.filter(x => String(x.id) !== String(id));
-    localStorage.setItem(key, JSON.stringify(filtered));
+  try {
+    const res = await fetch(SUPABASE_URL + '/functions/v1/upload-project-media', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
+      },
+      body: JSON.stringify({ action: 'delete', id }),
+    });
+
+    if (!res.ok) {
+      const t = await res.text().catch(() => '');
+      throw new Error('Edge Function falhou no delete: ' + res.status + (t ? (' - ' + t) : ''));
+    }
 
     await fetchProjectsFromSupabase();
     renderPortfolio();
     if (document.getElementById('all-projects-modal').classList.contains('show')) renderApm();
   } catch (e) {
-    alert('Erro ao excluir projeto do LocalStorage.');
     console.error(e);
+    alert('Erro ao excluir no Supabase (Edge Function).');
   }
 }
+
 
 
 
