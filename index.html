@@ -1375,6 +1375,9 @@ async function fetchProjectsFromSupabase() {
 }
 
 function showAllProjects() {
+  // garante que o modal reflita localStorage
+  try { applyLocalOverrides(); } catch (_) {}
+
   const modal = document.getElementById('all-projects-modal');
   modal.classList.add('show');
   document.body.style.overflow = 'hidden';
