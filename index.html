@@ -1859,12 +1859,31 @@ async function saveProject() {
     const arr = raw ? JSON.parse(raw) : [];
     const list = Array.isArray(arr) ? arr : [];
 
+    // IMPORTANTE: localStorage tem cota pequena.
+    // DataURLs de imagens/vídeos estouram a cota.
+    // Então persistimos somente metadados/texto + capa/video/imagens
+    // (para este modo simples, manteremos somente URLs baseadas em seleção.
+    // Se for DataURL, a renderização pode funcionar só na sessão, mas não persiste.)
+    const pToStore = {
+      id: p.id,
+      name: p.name,
+      subtitle: p.subtitle,
+      description: p.description,
+      icon: p.icon,
+      color: p.color,
+      tags: p.tags,
+      cover_url: p.cover_url,
+      // Persistimos apenas strings curtas. Se for dataURL muito grande, removemos.
+      image_urls: (Array.isArray(p.image_urls) ? p.image_urls.filter(x => typeof x === 'string' && !x.startsWith('data:')) : []),
+      video_urls: (Array.isArray(p.video_urls) ? p.video_urls.filter(x => typeof x === 'string' && !x.startsWith('data:')) : []),
+    };
+
     if (editingId !== null) {
       const idx = list.findIndex(x => String(x.id) === String(editingId));
-      if (idx >= 0) list[idx] = p;
-      else list.push(p);
+      if (idx >= 0) list[idx] = pToStore;
+      else list.push(pToStore);
     } else {
-      list.push(p);
+      list.push(pToStore);
     }
 
     localStorage.setItem(key, JSON.stringify(list));
