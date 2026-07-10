@@ -1819,8 +1819,9 @@ function closeProjectDetails() {
 }
 
 async function saveProject() {
-  // Upload + persistência via Edge Function (não via REST)
-  // Isso evita erro de RLS/Permissões no frontend.
+  // Fluxo mais simples e sem dor de cabeça:
+  // salvar apenas em LocalStorage para o preview e exibição funcionarem imediatamente.
+  // (A lista principal já vem de ./projects.json; aqui substituímos via cache local.)
 
   const name = document.getElementById('ed-name').value.trim();
   const subtitle = document.getElementById('ed-subtitle').value.trim();
@@ -1834,82 +1835,68 @@ async function saveProject() {
   const color = edColor;
   const tags = edTags;
 
-  // cover_idx: índice da capa dentro de images[]
-  // Quando edCoverIndex === null => primeira imagem
   const cover_idx = (typeof edCoverIndex === 'number' && edCoverIndex >= 0) ? edCoverIndex : 0;
+  const images = Array.isArray(edImages) ? edImages : [];
+  const videos = Array.isArray(edVideos) ? edVideos : [];
+  const cover_url = images[cover_idx] || images[0] || null;
 
-  const images = (Array.isArray(edImages) ? edImages : []);
-  const videos = (Array.isArray(edVideos) ? edVideos : []);
-
-  const payload = {
-    action: editingId !== null ? 'update' : 'create',
-    id: editingId !== null ? editingId : null,
+  const p = {
+    id: editingId !== null ? editingId : Date.now(),
     name,
     subtitle,
     description,
     icon,
     color,
     tags,
-    images,
-    videos,
-    cover_idx,
+    image_urls: images,
+    video_urls: videos,
+    cover_url,
   };
 
   try {
-    document.getElementById('editor-error').textContent = '';
+    const key = 'certhus.projects.localOverrides.v1';
+    const raw = localStorage.getItem(key);
+    const arr = raw ? JSON.parse(raw) : [];
+    const list = Array.isArray(arr) ? arr : [];
 
-    const res = await fetch(SUPABASE_URL + '/functions/v1/upload-project-media', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        // publishable (anon) pode ser exigido; Edge Function deve validar do lado dela.
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
-
-      },
-      body: JSON.stringify(payload),
-    });
-
-    if (!res.ok) {
-      const t = await res.text().catch(() => '');
-      throw new Error('Edge Function falhou: ' + res.status + (t ? (' - ' + t) : ''));
+    if (editingId !== null) {
+      const idx = list.findIndex(x => String(x.id) === String(editingId));
+      if (idx >= 0) list[idx] = p;
+      else list.push(p);
+    } else {
+      list.push(p);
     }
 
+    localStorage.setItem(key, JSON.stringify(list));
+
+    // Atualiza tela usando projetos atuais carregados (e aplica overrides)
     await fetchProjectsFromSupabase();
     closeEditor();
     renderPortfolio();
     if (document.getElementById('all-projects-modal').classList.contains('show')) renderApm();
   } catch (e) {
     console.error(e);
-    document.getElementById('editor-error').textContent = 'Erro ao salvar. Verifique Edge Function, CORS e permissões.';
+    document.getElementById('editor-error').textContent = 'Erro ao salvar no LocalStorage.';
   }
 }
+
 
 async function deleteProject(id) {
   if (!confirm('Excluir este projeto?')) return;
   try {
-    const payload = { action: 'delete', id };
+    const key = 'certhus.projects.localOverrides.v1';
+    const raw = localStorage.getItem(key);
+    const arr = raw ? JSON.parse(raw) : [];
+    const list = Array.isArray(arr) ? arr : [];
 
-    const res = await fetch(SUPABASE_URL + '/functions/v1/upload-project-media', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
-      },
-      body: JSON.stringify(payload),
-    });
-
-    if (!res.ok) {
-      const t = await res.text().catch(() => '');
-      throw new Error('Edge Function falhou: ' + res.status + (t ? (' - ' + t) : ''));
-    }
+    const filtered = list.filter(x => String(x.id) !== String(id));
+    localStorage.setItem(key, JSON.stringify(filtered));
 
     await fetchProjectsFromSupabase();
     renderPortfolio();
     if (document.getElementById('all-projects-modal').classList.contains('show')) renderApm();
   } catch (e) {
-    alert('Erro ao excluir projeto. Verifique Edge Function, CORS e permissões.');
+    alert('Erro ao excluir projeto do LocalStorage.');
     console.error(e);
   }
 }
