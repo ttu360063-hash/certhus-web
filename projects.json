@@ -1,0 +1,39 @@
+[
+  {
+    "id": 1,
+    "name": "CONNECT+",
+    "subtitle": "Plataforma de Gestão Empresarial",
+    "description": "Plataforma para gestão empresarial com foco em eficiência e escalabilidade.",
+    "icon": "🔵",
+    "color": "linear-gradient(135deg,#1e3a8a,#1e1b4b)",
+    "tags": ["Sistema Web", "Gestão"],
+    "cover_url": "./index_files/photo-1551288049-bebda4e38f71",
+    "image_urls": ["./index_files/photo-1551288049-bebda4e38f71"],
+    "video_urls": []
+  },
+  {
+    "id": 2,
+    "name": "FITZONE",
+    "subtitle": "Aplicativo de Treinos e Desempenho",
+    "description": "Aplicativo para treinos e acompanhamento de desempenho.",
+    "icon": "🏋️",
+    "color": "linear-gradient(135deg,#111827,#1e3a8a)",
+    "tags": ["Aplicativo", "Saúde"],
+    "cover_url": "./index_files/photo-1526506118085-60ce8714f8c5",
+    "image_urls": ["./index_files/photo-1526506118085-60ce8714f8c5"],
+    "video_urls": []
+  },
+  {
+    "id": 3,
+    "name": "SMARTFLOW",
+    "subtitle": "Automação de Processos Industriais",
+    "description": "Automação para processos industriais com otimização e produtividade.",
+    "icon": "⚙️",
+    "color": "linear-gradient(135deg,#312e81,#0f172a)",
+    "tags": ["Automação", "Indústria"],
+    "cover_url": "./index_files/photo-1518432031352-d6fc5734fa38",
+    "image_urls": ["./index_files/photo-1518432031352-d6fc5734fa38"],
+    "video_urls": []
+  }
+]
+
