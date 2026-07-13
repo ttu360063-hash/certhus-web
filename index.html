@@ -1185,6 +1185,11 @@ let projects = [
 // Supabase (somente leitura no frontend)
 // (Variáveis declaradas depois; manter apenas uma fonte de verdade)
 
+// Persistência local (fallback para destravar admin sem depender de Edge Function)
+// Usada quando a Edge Function não existe/deploy falhou.
+const PROJECTS_LOCAL_KEY = 'certhus.projects.localOverrides.v1';
+
+
 
 function normalizeJsonArray(v) {
   if (Array.isArray(v)) return v;
@@ -1310,8 +1315,8 @@ function normalizeProjectFromDB(p) {
 }
 
 function applyLocalOverrides() {
-  const key = 'certhus.projects.localOverrides.v1';
-  const raw = localStorage.getItem(key);
+  const raw = localStorage.getItem(PROJECTS_LOCAL_KEY);
+
   if (!raw) return;
 
   let arr;
@@ -1495,10 +1500,11 @@ function cardHTML(p, showAdmin) {
 
       ${showAdmin ? `
         <div class="admin-card-controls show">
-          <button class="ctrl-btn" onclick="openEditor(${p.id})" title="Editar">
+          <button class="ctrl-btn" onclick="event.stopPropagation();openEditor(${p.id})" title="Editar">
+
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
           </button>
-          <button class="ctrl-btn del" onclick="deleteProject(${p.id})" title="Excluir">
+          <button class="ctrl-btn del" onclick="event.stopPropagation();deleteProject(${p.id})" title="Excluir">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
           </button>
         </div>` : ''}
@@ -1904,8 +1910,10 @@ async function saveProject() {
 
   document.getElementById('editor-error').textContent = '';
 
-  try {
+try {
+    // Fallback imediato: se a Edge Function falhar (deploy inexistente / CORS / 403), salvamos em localStorage
     const res = await fetch(SUPABASE_URL + '/functions/v1/upload-project-media', {
+
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
