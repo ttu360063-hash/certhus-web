@@ -775,22 +775,22 @@
       </div>
     </div>
     <nav class="nav-links">
-      <a href="https://preview--animated-web-page.lumi.ing/certhus-export.html#hero" class="active">Início</a>
-      <a href="https://preview--animated-web-page.lumi.ing/certhus-export.html#about">Sobre</a>
-      <a href="https://preview--animated-web-page.lumi.ing/certhus-export.html#services-strip">Serviços</a>
-      <a href="https://preview--animated-web-page.lumi.ing/certhus-export.html#portfolio">Portfólio</a>
-      <a href="https://preview--animated-web-page.lumi.ing/certhus-export.html#cta">Contato</a>
+      <a href="#hero" class="active" onclick="return scrollToSection('hero')">Início</a>
+      <a href="#about" onclick="return scrollToSection('about')">Sobre</a>
+      <a href="#services-strip" onclick="return scrollToSection('services-strip')">Serviços</a>
+      <a href="#portfolio" onclick="return scrollToSection('portfolio')">Portfólio</a>
+      <a href="#cta" onclick="return scrollToSection('cta')">Contato</a>
     </nav>
     <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
   </div>
   <div id="mobile-menu">
-    <a href="https://preview--animated-web-page.lumi.ing/certhus-export.html#hero" onclick="closeMobileMenu()">Início</a>
-    <a href="https://preview--animated-web-page.lumi.ing/certhus-export.html#about" onclick="closeMobileMenu()">Sobre</a>
-    <a href="https://preview--animated-web-page.lumi.ing/certhus-export.html#services-strip" onclick="closeMobileMenu()">Serviços</a>
-    <a href="https://preview--animated-web-page.lumi.ing/certhus-export.html#portfolio" onclick="closeMobileMenu()">Portfólio</a>
-    <a href="https://preview--animated-web-page.lumi.ing/certhus-export.html#cta" onclick="closeMobileMenu()">Contato</a>
+    <a href="#hero" onclick="closeMobileMenu();return scrollToSection('hero')">Início</a>
+    <a href="#about" onclick="closeMobileMenu();return scrollToSection('about')">Sobre</a>
+    <a href="#services-strip" onclick="closeMobileMenu();return scrollToSection('services-strip')">Serviços</a>
+    <a href="#portfolio" onclick="closeMobileMenu();return scrollToSection('portfolio')">Portfólio</a>
+    <a href="#cta" onclick="closeMobileMenu();return scrollToSection('cta')">Contato</a>
   </div>
 </header>
 
@@ -1015,7 +1015,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <p class="footer-copy">© 2025 Certhus Desenvolvimento de Software. Todos os direitos reservados.</p>
+      <p class="footer-copy">© 2026 Certhus Desenvolvimento de Software. Todos os direitos reservados.</p>
       <div class="footer-socials">
         <a href="https://preview--animated-web-page.lumi.ing/certhus-export.html#" aria-label="Instagram">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
@@ -1409,6 +1409,22 @@ function runReveal() {
   els.forEach(el => obs.observe(el));
 }
 document.addEventListener('DOMContentLoaded', runReveal);
+
+function scrollToSection(id) {
+  try {
+    const el = document.getElementById(id);
+    if (!el) return false;
+
+    const nav = document.getElementById('navbar');
+    const offset = (nav && nav.offsetHeight) ? nav.offsetHeight : 64;
+
+    const y = window.scrollY + el.getBoundingClientRect().top - offset;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+    return false;
+  } catch (e) {
+    return false;
+  }
+}
 
 // ── Navbar scroll ────────────────────────────────────────────────
 window.addEventListener('scroll', () => {
