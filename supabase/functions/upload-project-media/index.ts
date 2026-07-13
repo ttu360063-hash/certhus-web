@@ -28,7 +28,12 @@ function addCorsHeaders(_req: Request, headers?: HeadersInit) {
   };
 }
 
+
+
+
+
 function jsonResponse(req: Request, body: unknown, status = 200) {
+
   return new Response(JSON.stringify(body), {
     status,
     headers: addCorsHeaders(req, {
@@ -58,7 +63,7 @@ function extFromMime(mime: string) {
   return "bin";
 }
 
-serve(async (req) => {
+serve(async (req: Request) => {
   try {
     if (req.method === "OPTIONS") {
       return new Response("", {
