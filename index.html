@@ -1122,21 +1122,25 @@
       <input class="form-input" id="ed-icon" placeholder="Ex: 🚀">
     </div>
     <div class="form-group">
-      <label class="form-label">Imagens e Vídeos (upload)</label>
-      <input class="form-input" id="ed-media" type="file" accept="image/*,video/mp4" multiple>
-      <div style="margin-top:8px;color:#9ca3af;font-size:12px;line-height:1.5">
-        Pré-visualização aparece abaixo. (Vídeos: MP4)
+      <label class="form-label">Imagens (links)</label>
+      <div class="tag-add-row" style="margin-bottom:8px">
+        <input class="form-input" id="ed-image-url-input" placeholder="Cole um link de imagem (https://...)" style="flex:1" />
+        <button class="tag-add-btn" type="button" onclick="addImageUrl()">+</button>
       </div>
-      <div id="ed-media-preview" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px"></div>
+      <div style="color:#9ca3af;font-size:12px;line-height:1.5;margin-bottom:8px">
+        Adicione 1 ou mais links. A primeira imagem será usada como capa.
+      </div>
+      <div id="ed-images-preview" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px"></div>
 
       <div style="margin-top:16px">
         <label class="form-label" style="margin-bottom:8px">Capa do Card (escolher uma imagem)</label>
         <div style="color:#9ca3af;font-size:12px;line-height:1.5;margin-bottom:8px">
-          Se você não selecionar, a capa será a primeira imagem enviada.
+          Se você não escolher, a capa será a primeira imagem.
         </div>
         <div id="ed-cover-select" style="display:flex;flex-wrap:wrap;gap:10px"></div>
       </div>
     </div>
+
     <div class="form-group">
       <label class="form-label">Descrição do Projeto</label>
       <textarea class="form-input" id="ed-description" rows="4" style="resize:vertical"></textarea>
@@ -1598,10 +1602,10 @@ function escapeHtml(str) {
     .replace(/'/g, '&#039;');
 }
 
-let edImages = []; // dataURLs
-let edVideos = []; // dataURLs (mp4)
+let edImages = []; // array de URLs
 let edCoverIndex = null; // null => first image
-let edCoverData = null; // dataURL da capa (persistência explícita)
+let edCoverData = null; // mantido por compatibilidade (não usado no modo links)
+
 
 function setCoverIndex(idx) {
   edCoverIndex = (typeof idx === 'number' && idx >= 0) ? idx : null;
@@ -1644,11 +1648,10 @@ function buildCoverSelect() {
 }
 
 function updateMediaPreview() {
-  const preview = document.getElementById('ed-media-preview');
+  const preview = document.getElementById('ed-images-preview');
   if (!preview) return;
   preview.innerHTML = '';
 
-  // imagens
   edImages.forEach((src, idx) => {
     const wrap = document.createElement('div');
     wrap.style.width = '96px';
@@ -1674,6 +1677,12 @@ function updateMediaPreview() {
     btn.style.color = '#fff';
     btn.onclick = () => {
       edImages.splice(idx, 1);
+      // se a capa apontava para um índice removido, volta para o primeiro
+      if (typeof edCoverIndex === 'number') {
+        if (edCoverIndex === idx) edCoverIndex = null;
+        if (edCoverIndex > idx) edCoverIndex = edCoverIndex - 1;
+      }
+      buildCoverSelect();
       updateMediaPreview();
     };
 
@@ -1681,41 +1690,8 @@ function updateMediaPreview() {
     wrap.appendChild(btn);
     preview.appendChild(wrap);
   });
-
-  // vídeos
-  edVideos.forEach((src, idx) => {
-    const wrap = document.createElement('div');
-    wrap.style.width = '140px';
-    wrap.style.display = 'flex';
-    wrap.style.flexDirection = 'column';
-    wrap.style.gap = '6px';
-
-    const vid = document.createElement('video');
-    vid.src = src;
-    vid.controls = true;
-    vid.muted = true;
-    vid.style.width = '140px';
-    vid.style.height = '78px';
-
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.textContent = 'Remover';
-    btn.style.fontSize = '12px';
-    btn.style.padding = '6px 8px';
-    btn.style.borderRadius = '8px';
-    btn.style.border = '1px solid #374151';
-    btn.style.background = 'rgba(255,255,255,0.06)';
-    btn.style.color = '#fff';
-    btn.onclick = () => {
-      edVideos.splice(idx, 1);
-      updateMediaPreview();
-    };
-
-    wrap.appendChild(vid);
-    wrap.appendChild(btn);
-    preview.appendChild(wrap);
-  });
 }
+
 
 function readFileAsDataURL(file) {
   return new Promise((resolve, reject) => {
@@ -1726,22 +1702,42 @@ function readFileAsDataURL(file) {
   });
 }
 
-async function handleMediaFiles(files) {
-  // reset antes de adicionar
-  edImages = [];
-  edVideos = [];
+function addImageUrl() {
+  const input = document.getElementById('ed-image-url-input');
+  if (!input) return;
+  const raw = input.value.trim();
+  if (!raw) return;
 
-  const list = Array.from(files || []);
-  for (const f of list) {
-    if (f.type && f.type.startsWith('image/')) {
-      edImages.push(await readFileAsDataURL(f));
-    } else if (f.type === 'video/mp4' || f.type.startsWith('video/')) {
-      // só mp4 no accept, mas mantém robustez
-      edVideos.push(await readFileAsDataURL(f));
+  // aceita múltiplos separados por quebra de linha/ vírgula
+  const candidates = raw
+    .split(/\s*[\n,]\s*/)
+    .map(s => s.trim())
+    .filter(Boolean);
+
+  let added = 0;
+  for (const url of candidates) {
+    if (!/^https?:\/\//i.test(url)) continue; // só http(s)
+    if (!edImages.includes(url)) {
+      edImages.push(url);
+      added++;
     }
   }
+
+  if (!added) {
+    document.getElementById('editor-error').textContent = 'Nenhuma imagem válida foi adicionada. Use URLs http(s).';
+  } else {
+    document.getElementById('editor-error').textContent = '';
+  }
+
+  input.value = '';
+  if (edImages.length && (edCoverIndex === null || edCoverIndex === undefined)) {
+    // mantém capa na primeira caso não exista seleção explícita
+  }
+  buildCoverSelect();
   updateMediaPreview();
+  input.focus();
 }
+
 
 window.addEventListener('DOMContentLoaded', () => {
   const input = document.getElementById('ed-media');
