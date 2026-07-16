@@ -306,7 +306,7 @@
       };
     }
     else if (tab === 'advanced') {
-      container.innerHTML = '<h2>🚀 Publicar no Site Ao Vivo</h2>'
+      container.innerHTML = '<h2>🚀 Publicar no Site Ao Vivo</h2><p style="color:#ef4444;margin-bottom:12px;font-size:12px;font-weight:600;">⚠️ Atenção: A publicação só funciona se você acessar este painel pelo link online da Vercel. Não funciona acessando o arquivo local (file://) no seu computador.</p>'
         + '<p style="color:#a0aabf;margin-bottom:24px;">Isso irá compilar todo o HTML e enviá-lo para a Vercel através do seu Github.</p>'
         + '<button id="btn-publish" class="cadmin-btn" style="background:#10b981;">Publicar Agora</button>'
         + '<div id="pub-status" style="margin-top:16px;font-size:14px;color:#60a5fa;"></div>';
@@ -353,28 +353,31 @@
     }
   }
 
-  // --- 5. LÓGICA DO PORTFÓLIO ---
+    // --- 5. LÓGICA DO PORTFÓLIO ---
+  function getPortfolioData() {
+    try { return JSON.parse(document.getElementById('portfolio-data').textContent); } catch(e) { return []; }
+  }
+  function setPortfolioData(data) {
+    document.getElementById('portfolio-data').textContent = '\n' + JSON.stringify(data, null, 2) + '\n';
+    if(typeof renderPortfolio === 'function') renderPortfolio(); // Atualiza a tela
+  }
+
   function renderPortfolioList(container) {
     container.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">'
       + '<h2>Portfólio</h2><button id="btn-add-proj" class="cadmin-btn">Novo Projeto</button></div>'
       + '<div id="proj-list"></div>';
 
     var listWrap = document.getElementById('proj-list');
-    var grid = document.querySelector('.portfolio-grid');
-    if (!grid) return;
-
-    var cards = Array.from(grid.querySelectorAll('.project-card'));
+    var projects = getPortfolioData();
     
     function drawList() {
       listWrap.innerHTML = '';
-      cards.forEach(function(card, idx) {
-        var name = card.querySelector('.card-badge span:last-child').innerText;
-        var subtitle = card.querySelector('.card-subtitle').innerText;
+      projects.forEach(function(p, idx) {
         var div = document.createElement('div');
         div.className = 'cadmin-project-item';
         div.innerHTML = '<div class="cadmin-project-item-info">'
-          + '<strong style="font-size:16px;">'+name+'</strong>'
-          + '<span style="font-size:13px;color:#a0aabf;">'+subtitle+'</span>'
+          + '<strong style="font-size:16px;">'+p.name+'</strong>'
+          + '<span style="font-size:13px;color:#a0aabf;">'+p.subtitle+'</span>'
           + '</div>'
           + '<div style="display:flex;gap:8px;">'
           + '<button class="cadmin-btn-outline edit-btn" data-idx="'+idx+'">Editar</button>'
@@ -385,14 +388,14 @@
 
       var editBtns = listWrap.querySelectorAll('.edit-btn');
       editBtns.forEach(function(btn) {
-        btn.onclick = function() { editProjectForm(container, cards[btn.getAttribute('data-idx')]); };
+        btn.onclick = function() { editProjectForm(container, projects[btn.getAttribute('data-idx')], parseInt(btn.getAttribute('data-idx'))); };
       });
       var delBtns = listWrap.querySelectorAll('.del-btn');
       delBtns.forEach(function(btn) {
         btn.onclick = function() {
           if(confirm('Certeza que deseja excluir este projeto?')) {
-            grid.removeChild(cards[btn.getAttribute('data-idx')]);
-            cards = Array.from(grid.querySelectorAll('.project-card'));
+            projects.splice(btn.getAttribute('data-idx'), 1);
+            setPortfolioData(projects);
             drawList();
           }
         };
@@ -402,59 +405,57 @@
     drawList();
 
     document.getElementById('btn-add-proj').onclick = function() {
-      var newCard = document.createElement('div');
-      newCard.className = 'project-card reveal visible';
-      newCard.style.background = 'linear-gradient(135deg,#1e3a8a,#1e1b4b)';
-      newCard.innerHTML = '<div class="card-img"><img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=80" alt="Novo App" /><div class="card-img-overlay"></div><div class="card-badge"><span>🚀</span><span>NOVO APP</span></div></div><div class="card-body"><div class="card-subtitle">Nova Descrição</div><div class="card-tags"><span class="card-tag">Web</span></div></div>';
-      grid.appendChild(newCard);
-      cards = Array.from(grid.querySelectorAll('.project-card'));
-      editProjectForm(container, newCard);
+      var newP = {
+        id: Date.now(),
+        name: "Novo Projeto",
+        subtitle: "Descrição curta",
+        description: "Descrição completa",
+        icon: "🚀",
+        color: "linear-gradient(135deg,#1e3a8a,#1e1b4b)",
+        tags: ["Web"],
+        cover: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=80",
+        images: ["https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=80"]
+      };
+      projects.push(newP);
+      setPortfolioData(projects);
+      editProjectForm(container, newP, projects.length - 1);
     };
   }
 
-  function editProjectForm(container, cardNode) {
-    var name = cardNode.querySelector('.card-badge span:last-child').innerText;
-    var icon = cardNode.querySelector('.card-badge span:first-child').innerText;
-    var subtitle = cardNode.querySelector('.card-subtitle').innerText;
-    var img = cardNode.querySelector('.card-img img').getAttribute('src');
-    
-    var tagsHtml = '';
-    var tagNodes = cardNode.querySelectorAll('.card-tag');
-    tagNodes.forEach(function(t) { tagsHtml += t.innerText + ', '; });
-    tagsHtml = tagsHtml.replace(/, $/, '');
-
-    var bgMatch = cardNode.style.background.match(/linear-gradient\([^)]+\)/);
-    var color = bgMatch ? bgMatch[0] : 'linear-gradient(135deg,#1e3a8a,#1e1b4b)';
-
+  function editProjectForm(container, p, idx) {
     container.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">'
       + '<h2>Editar Projeto</h2><button id="btn-back-proj" class="cadmin-btn-outline">Voltar</button></div>'
-      + '<div class="cadmin-form-group"><label class="cadmin-label">Nome do Projeto</label><input type="text" id="fp-name" class="cadmin-input" value="'+name+'"></div>'
-      + '<div class="cadmin-form-group"><label class="cadmin-label">Subtítulo</label><input type="text" id="fp-sub" class="cadmin-input" value="'+subtitle+'"></div>'
-      + '<div class="cadmin-form-group"><label class="cadmin-label">Ícone (Emoji)</label><input type="text" id="fp-icon" class="cadmin-input" value="'+icon+'"></div>'
-      + '<div class="cadmin-form-group"><label class="cadmin-label">Tags (separadas por vírgula)</label><input type="text" id="fp-tags" class="cadmin-input" value="'+tagsHtml+'"></div>'
-      + '<div class="cadmin-form-group"><label class="cadmin-label">Imagem da Capa (URL)</label><input type="text" id="fp-img" class="cadmin-input" value="'+img+'"></div>'
-      + '<div class="cadmin-form-group"><label class="cadmin-label">Cor de Fundo (CSS linear-gradient ou cor HEX)</label><input type="text" id="fp-color" class="cadmin-input" value="'+color+'"></div>'
+      + '<div class="cadmin-form-group"><label class="cadmin-label">Nome do Projeto</label><input type="text" id="fp-name" class="cadmin-input" value="'+(p.name||'')+'"></div>'
+      + '<div class="cadmin-form-group"><label class="cadmin-label">Subtítulo</label><input type="text" id="fp-sub" class="cadmin-input" value="'+(p.subtitle||'')+'"></div>'
+      + '<div class="cadmin-form-group"><label class="cadmin-label">Descrição Completa</label><textarea id="fp-desc" class="cadmin-textarea">'+(p.description||'')+'</textarea></div>'
+      + '<div class="cadmin-form-group"><label class="cadmin-label">Ícone (Emoji)</label><input type="text" id="fp-icon" class="cadmin-input" value="'+(p.icon||'')+'"></div>'
+      + '<div class="cadmin-form-group"><label class="cadmin-label">Tags (separadas por vírgula)</label><input type="text" id="fp-tags" class="cadmin-input" value="'+(p.tags||[]).join(', ')+'"></div>'
+      + '<div class="cadmin-form-group"><label class="cadmin-label">Cor de Fundo (CSS linear-gradient ou cor HEX)</label><input type="text" id="fp-color" class="cadmin-input" value="'+(p.color||'')+'"></div>'
+      + '<div class="cadmin-form-group"><label class="cadmin-label">Imagem da Capa (1 URL)</label><input type="text" id="fp-cover" class="cadmin-input" value="'+(p.cover||'')+'"></div>'
+      + '<div class="cadmin-form-group"><label class="cadmin-label">Galeria de Imagens (URLs separadas por vírgula ou quebra de linha)</label><textarea id="fp-images" class="cadmin-textarea">'+(p.images||[]).join('\n')+'</textarea></div>'
       + '<button id="btn-save-p" class="cadmin-btn">Salvar Projeto</button>';
 
     document.getElementById('btn-back-proj').onclick = function() { renderPortfolioList(container); };
 
     document.getElementById('btn-save-p').onclick = function() {
-      cardNode.querySelector('.card-badge span:last-child').innerText = document.getElementById('fp-name').value;
-      cardNode.querySelector('.card-subtitle').innerText = document.getElementById('fp-sub').value;
-      cardNode.querySelector('.card-badge span:first-child').innerText = document.getElementById('fp-icon').value;
-      cardNode.querySelector('.card-img img').setAttribute('src', document.getElementById('fp-img').value);
-      cardNode.style.background = document.getElementById('fp-color').value;
-
+      p.name = document.getElementById('fp-name').value;
+      p.subtitle = document.getElementById('fp-sub').value;
+      p.description = document.getElementById('fp-desc').value;
+      p.icon = document.getElementById('fp-icon').value;
+      p.color = document.getElementById('fp-color').value;
+      p.cover = document.getElementById('fp-cover').value;
+      
       var tagsArr = document.getElementById('fp-tags').value.split(',').map(function(t){ return t.trim(); }).filter(Boolean);
-      var tagWrap = cardNode.querySelector('.card-tags');
-      tagWrap.innerHTML = '';
-      tagsArr.forEach(function(t) {
-        var span = document.createElement('span');
-        span.className = 'card-tag';
-        span.innerText = t;
-        tagWrap.appendChild(span);
-      });
+      p.tags = tagsArr;
+      
+      var imgsArr = document.getElementById('fp-images').value.split(/[\n,]+/).map(function(t){ return t.trim(); }).filter(Boolean);
+      p.images = imgsArr;
 
+      var projects = getPortfolioData();
+      projects[idx] = p;
+      setPortfolioData(projects);
+
+      alert('Projeto salvo com sucesso!');
       renderPortfolioList(container);
     };
   }
