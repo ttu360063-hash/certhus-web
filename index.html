@@ -1208,6 +1208,65 @@
       padding: 16px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;
     }
     .cadmin-project-item-info { display: flex; flex-direction: column; gap: 4px; }
+  </style><style>
+    #certhus-admin-panel {
+      position: fixed; inset: 0; z-index: 100000;
+      background: #0f1115; color: #fff;
+      font-family: 'Inter', sans-serif;
+      display: flex; flex-direction: row;
+      overflow: hidden;
+    }
+    .cadmin-sidebar {
+      width: 260px; background: #181b21; border-right: 1px solid #282c34;
+      display: flex; flex-direction: column;
+    }
+    .cadmin-brand {
+      padding: 24px; border-bottom: 1px solid #282c34;
+      font-weight: 800; font-size: 18px; color: #60a5fa;
+    }
+    .cadmin-nav {
+      flex: 1; padding: 24px 12px; overflow-y: auto;
+    }
+    .cadmin-nav-item {
+      padding: 12px 16px; margin-bottom: 8px; border-radius: 8px;
+      cursor: pointer; font-size: 14px; font-weight: 500; color: #a0aabf;
+      transition: all 0.2s;
+    }
+    .cadmin-nav-item:hover { background: #282c34; color: #fff; }
+    .cadmin-nav-item.active { background: #2563eb; color: #fff; }
+    .cadmin-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .cadmin-header {
+      height: 70px; border-bottom: 1px solid #282c34; background: #181b21;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px;
+    }
+    .cadmin-content { flex: 1; padding: 32px; overflow-y: auto; background: #0f1115; }
+    .cadmin-form-group { margin-bottom: 24px; }
+    .cadmin-label { display: block; font-size: 13px; color: #a0aabf; margin-bottom: 8px; font-weight: 600; }
+    .cadmin-input, .cadmin-textarea {
+      width: 100%; padding: 12px 16px; border-radius: 8px;
+      background: #1e222b; border: 1px solid #282c34; color: #fff;
+      font-family: 'Inter', sans-serif; font-size: 14px; outline: none;
+    }
+    .cadmin-textarea { resize: vertical; min-height: 100px; }
+    .cadmin-btn {
+      padding: 12px 24px; border-radius: 8px; background: #2563eb; color: #fff;
+      font-weight: 600; border: none; cursor: pointer; font-size: 14px;
+      transition: background 0.2s;
+    }
+    .cadmin-btn:hover { background: #1d4ed8; }
+    .cadmin-btn-outline {
+      padding: 12px 24px; border-radius: 8px; background: transparent; color: #60a5fa;
+      font-weight: 600; border: 1px solid #2563eb; cursor: pointer; font-size: 14px;
+    }
+    .cadmin-btn-outline:hover { background: rgba(37,99,235,0.1); }
+    .cadmin-btn-danger { background: #ef4444; }
+    .cadmin-btn-danger:hover { background: #dc2626; }
+    .cadmin-project-item {
+      background: #1e222b; border: 1px solid #282c34; border-radius: 8px;
+      padding: 16px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .cadmin-project-item-info { display: flex; flex-direction: column; gap: 4px; }
   </style></head>
 <body style="" cz-shortcut-listen="true">
 <div id="root" style="display: block;">
@@ -1384,6 +1443,20 @@
       <div class="card-body">
         <div class="card-subtitle">Website institucional moderno para empresa de mídias digitais.</div>
         <div class="card-tags"><span class="card-tag">Landing Page</span><span class="card-tag">Website Responsivo</span><span class="card-tag">UI/UX</span><span class="card-tag">Marketing Digital</span><span class="card-tag">Desenvolvimento Web</span></div>
+      </div>
+    </div>
+    <div class="project-card reveal" style="background:linear-gradient(135deg,#1e3a8a,#1e1b4b)" onclick="openProjectDetails('1784307318470')">
+      <div class="card-img">
+        <img src="https://www.image2url.com/r2/default/images/1784307293494-23db345c-d0f1-4b82-b647-e70f4f7c0047.webp" alt="LIBERA OFF">
+        <div class="card-img-overlay"></div>
+        <div class="card-badge">
+          <span>🔊</span>
+          <span>LIBERA OFF</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-subtitle">Plataforma personalizada para contratação de locutores profissionais.</div>
+        <div class="card-tags"><span class="card-tag">Marketplace</span><span class="card-tag">Plataforma Web</span><span class="card-tag">Website Responsivo</span><span class="card-tag">Integração de Sistemas</span><span class="card-tag">Desenvolvimento Full Stack</span></div>
       </div>
     </div></div></div>
   </section></div>
@@ -1658,6 +1731,29 @@ function closeMobileMenu() {
       "https://www.image2url.com/r2/default/images/1784303008871-32aad901-8114-4f9f-83ec-1f03dd0bc5df.png",
       "https://www.image2url.com/r2/default/images/1784303030902-2bc43431-7a23-410b-9c36-abc415eefe54.png",
       "https://www.image2url.com/r2/default/images/1784303052033-04698e90-3c01-478e-bd1e-3306aaa8a09c.png"
+    ]
+  },
+  {
+    "id": 1784307318470,
+    "name": "LIBERA OFF",
+    "subtitle": "Plataforma personalizada para contratação de locutores profissionais.",
+    "description": "Plataforma web desenvolvida sob medida para conectar clientes a locutores profissionais verificados, oferecendo uma experiência moderna, intuitiva e segura na contratação de locuções personalizadas. O sistema permite explorar serviços, solicitar personalizações e encontrar a voz ideal para diferentes projetos, como rádios, vídeos, publicidade e produções digitais. O projeto foi desenvolvido com foco em alto desempenho, animações fluidas, domínio personalizado, integração com sistemas externos, responsividade completa para computadores e dispositivos móveis, além de uma arquitetura voltada para segurança, privacidade e escalabilidade, garantindo uma navegação estável e uma excelente experiência ao usuário.",
+    "icon": "🔊",
+    "color": "linear-gradient(135deg,#1e3a8a,#1e1b4b)",
+    "tags": [
+      "Marketplace",
+      "Plataforma Web",
+      "Website Responsivo",
+      "Integração de Sistemas",
+      "Desenvolvimento Full Stack"
+    ],
+    "cover": "https://www.image2url.com/r2/default/images/1784307293494-23db345c-d0f1-4b82-b647-e70f4f7c0047.webp",
+    "images": [
+      "https://www.image2url.com/r2/default/images/1784307966399-7db4c903-209e-4def-9e52-be39cfb8c1f8.png",
+      "https://www.image2url.com/r2/default/images/1784308066772-f7e749f4-3a6c-4cbe-a21f-507cc5c00302.png",
+      "https://www.image2url.com/r2/default/images/1784308130817-b7e756a9-1019-4d7e-8c66-234d1d746e26.png",
+      "https://www.image2url.com/r2/default/images/1784308244915-cc6cae72-d6b5-464a-906d-9bacca6231c8.png",
+      "https://www.image2url.com/r2/default/images/1784308337777-74472a77-af55-4796-a302-6724ea6254f8.png"
     ]
   }
 ]
