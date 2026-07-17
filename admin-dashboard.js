@@ -327,12 +327,16 @@
         // Remove o painel admin temporariamente para não enviá-lo junto
         var adminPanel = document.getElementById('certhus-admin-panel');
         var adminModal = document.getElementById('admin-modal');
-        if (adminPanel) adminPanel.style.display = 'none';
-        if (adminModal) adminModal.style.display = 'none';
+        
+        // REMOVE FROM DOM COMPLETELY SO IT DOES NOT GET SAVED!
+        if (adminPanel) adminPanel.remove();
+        if (adminModal) adminModal.remove();
 
         var finalHTML = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
         
-        if (adminPanel) adminPanel.style.display = '';
+        // ADD THEM BACK
+        if (adminPanel) document.body.appendChild(adminPanel);
+        if (adminModal) document.body.appendChild(adminModal);
         if (wasHidden) root.style.display = 'none';
 
         fetch(apiUrl, {
