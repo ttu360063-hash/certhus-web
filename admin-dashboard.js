@@ -306,12 +306,17 @@
       };
     }
     else if (tab === 'advanced') {
-      container.innerHTML = '<h2>🚀 Publicar no Site Ao Vivo</h2><p style="color:#ef4444;margin-bottom:12px;font-size:12px;font-weight:600;">⚠️ Atenção: A publicação só funciona se você acessar este painel pelo link online da Vercel. Não funciona acessando o arquivo local (file://) no seu computador.</p>'
-        + '<p style="color:#a0aabf;margin-bottom:24px;">Isso irá compilar todo o HTML e enviá-lo para a Vercel através do seu Github.</p>'
+      container.innerHTML = '<h2>🚀 Publicar no Site Ao Vivo</h2>'
+        + '<div class="cadmin-form-group" style="margin-top:16px;">'
+        + '  <label class="cadmin-label">URL da API (Vercel)</label>'
+        + '  <input type="text" id="api-url" class="cadmin-input" value="/api/save" placeholder="Ex: https://seusite.vercel.app/api/save">'
+        + '  <p style="color:#a0aabf;font-size:12px;margin-top:8px;">Se você está testando localmente (Live Server) ou em outra plataforma (como Lumi), digite a URL COMPLETA da sua Vercel acima. Se você já estiver acessando a Vercel, deixe apenas /api/save.</p>'
+        + '</div>'
         + '<button id="btn-publish" class="cadmin-btn" style="background:#10b981;">Publicar Agora</button>'
         + '<div id="pub-status" style="margin-top:16px;font-size:14px;color:#60a5fa;"></div>';
 
       document.getElementById('btn-publish').onclick = function() {
+        var apiUrl = document.getElementById('api-url').value.trim() || '/api/save';
         var status = document.getElementById('pub-status');
         status.innerText = 'Processando e enviando para o servidor...';
         
@@ -330,7 +335,7 @@
         if (adminPanel) adminPanel.style.display = '';
         if (wasHidden) root.style.display = 'none';
 
-        fetch('/api/save', {
+        fetch(apiUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ password: _adminSecret, html: finalHTML })
