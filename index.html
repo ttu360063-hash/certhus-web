@@ -1780,7 +1780,7 @@ function closeMobileMenu() {
 </div>
 
 <!-- ── Project Details Modal ───────────────────────────────────── -->
-<div id="project-details-modal" onclick="if(event.target === this) closeProjectDetails()" style="display: none; position: fixed; inset: 0px; z-index: 130; background: rgba(2, 6, 23, 0.95); backdrop-filter: blur(16px); align-items: center; justify-content: center; padding: 24px; opacity: 0; transition: opacity 0.3s;">
+<div id="project-details-modal" onclick="if(event.target === this) closeProjectDetails()" style="display: none; position: fixed; inset: 0px; z-index: 130; background: rgba(2, 6, 23, 0.95); /* backdrop-filter removed to fix mobile video fullscreen bug */ align-items: center; justify-content: center; padding: 24px; opacity: 0; transition: opacity 0.3s;">
   <button class="modal-close" onclick="closeProjectDetails()" style="position:absolute;top:32px;right:40px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:50%;width:48px;height:48px;color:#fff;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;box-shadow:0 4px 12px rgba(0,0,0,0.5);z-index:140;">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
   </button>
@@ -1797,6 +1797,10 @@ function closeMobileMenu() {
       
       <div style="flex:1;position:relative;background:#0f172a;border-radius:16px;border:1px solid #1e293b;display:flex;align-items:center;justify-content:center;overflow:hidden;">
         <div id="pd-main-media" style="position:absolute;inset:0;width: 100%; height: 100%; transition: opacity 0.15s ease-in-out; opacity: 1; z-index:0;"></div>
+        <!-- Expand Button -->
+        <button onclick="openMediaLightbox()" style="position:absolute;top:16px;right:16px;width:40px;height:40px;border-radius:8px;background:rgba(15,23,42,0.8);border:1px solid #334155;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(4px);box-shadow:0 4px 12px rgba(0,0,0,0.5);z-index:10;transition:all 0.2s;" title="Tela Cheia">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+        </button>
         
         <!-- Controls -->
         <button onclick="prevGalleryImage()" style="position:absolute;left:16px;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;background:rgba(15,23,42,0.8);border:1px solid #334155;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(4px);box-shadow:0 4px 12px rgba(0,0,0,0.5);">
@@ -2122,5 +2126,42 @@ if(document.readyState === 'complete' || document.readyState === 'interactive') 
 \n<script src="admin-dashboard.js"></script>
 
 
+
+
+<!-- ── Fullscreen Media Lightbox ───────────────────────────────────── -->
+<div id="media-lightbox" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.98); align-items:center; justify-content:center; opacity:0; transition:opacity 0.3s;" onclick="if(event.target === this || event.target.id === 'media-lightbox-content') closeMediaLightbox()">
+  <button onclick="closeMediaLightbox()" style="position:absolute; top:24px; right:24px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); border-radius:50%; width:48px; height:48px; color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:100000; transition:all 0.2s;">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+  </button>
+  <div id="media-lightbox-content" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding:24px;"></div>
+</div>
+
+<script>
+function openMediaLightbox() {
+  const src = currentProjectImages[currentImageIndex] || '';
+  if(!src) return;
+  const isVideo = src.match(/\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i) || src.toLowerCase().includes('video') || src.includes('youtube') || src.includes('youtu.be') || src.includes('vimeo');
+  const lb = document.getElementById('media-lightbox');
+  const content = document.getElementById('media-lightbox-content');
+  
+  if(isVideo) {
+    content.innerHTML = `<video src="${src}" autoplay loop muted playsinline controls style="max-width:100%; max-height:100%; object-fit:contain; border-radius:8px;"></video>`;
+  } else {
+    content.innerHTML = `<img src="${src}" style="max-width:100%; max-height:100%; object-fit:contain; border-radius:8px;" />`;
+  }
+  
+  lb.style.display = 'flex';
+  setTimeout(() => lb.style.opacity = '1', 10);
+}
+
+function closeMediaLightbox() {
+  const lb = document.getElementById('media-lightbox');
+  lb.style.opacity = '0';
+  setTimeout(() => {
+    lb.style.display = 'none';
+    document.getElementById('media-lightbox-content').innerHTML = ''; // Stop video
+  }, 300);
+}
+</script>
 
 </body></html>
