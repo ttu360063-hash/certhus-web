@@ -811,6 +811,85 @@
             font-family: 'NotoSans_semibold_online_security'; 
             src: url(chrome-extension://llbcnfanfmjhpedaedhbcnpgeepdnnok/assets/fonts/noto-sans-semibold.ttf);
         }
+</style><style>
+    #certhus-admin-panel {
+      position: fixed; inset: 0; z-index: 100000;
+      background: #0f1115; color: #fff;
+      font-family: 'Inter', sans-serif;
+      display: flex; flex-direction: row;
+      overflow: hidden;
+    }
+    .cadmin-sidebar {
+      width: 260px; background: #181b21; border-right: 1px solid #282c34;
+      display: flex; flex-direction: column;
+    }
+    .cadmin-brand {
+      padding: 24px; border-bottom: 1px solid #282c34;
+      font-weight: 800; font-size: 18px; color: #60a5fa;
+    }
+    .cadmin-nav {
+      flex: 1; padding: 24px 12px; overflow-y: auto;
+    }
+    .cadmin-nav-item {
+      padding: 12px 16px; margin-bottom: 8px; border-radius: 8px;
+      cursor: pointer; font-size: 14px; font-weight: 500; color: #a0aabf;
+      transition: all 0.2s;
+    }
+    .cadmin-nav-item:hover { background: #282c34; color: #fff; }
+    .cadmin-nav-item.active { background: #2563eb; color: #fff; }
+    .cadmin-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .cadmin-header {
+      height: 70px; border-bottom: 1px solid #282c34; background: #181b21;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px;
+    }
+    .cadmin-content { flex: 1; padding: 32px; overflow-y: auto; background: #0f1115; }
+    .cadmin-form-group { margin-bottom: 24px; }
+    .cadmin-label { display: block; font-size: 13px; color: #a0aabf; margin-bottom: 8px; font-weight: 600; }
+    .cadmin-input, .cadmin-textarea {
+      width: 100%; padding: 12px 16px; border-radius: 8px;
+      background: #1e222b; border: 1px solid #282c34; color: #fff;
+      font-family: 'Inter', sans-serif; font-size: 14px; outline: none;
+    }
+    .cadmin-textarea { resize: vertical; min-height: 100px; }
+    .cadmin-btn {
+      padding: 12px 24px; border-radius: 8px; background: #2563eb; color: #fff;
+      font-weight: 600; border: none; cursor: pointer; font-size: 14px;
+      transition: background 0.2s;
+    }
+    .cadmin-btn:hover { background: #1d4ed8; }
+    .cadmin-btn-outline {
+      padding: 12px 24px; border-radius: 8px; background: transparent; color: #60a5fa;
+      font-weight: 600; border: 1px solid #2563eb; cursor: pointer; font-size: 14px;
+    }
+    .cadmin-btn-outline:hover { background: rgba(37,99,235,0.1); }
+    .cadmin-btn-danger { background: #ef4444; }
+    .cadmin-btn-danger:hover { background: #dc2626; }
+    .cadmin-project-item {
+      background: #1e222b; border: 1px solid #282c34; border-radius: 8px;
+      padding: 16px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .cadmin-project-item-info { display: flex; flex-direction: column; gap: 4px; }
+  </style><style>
+        @font-face {
+            font-family: 'NotoSans_online_security'; 
+            src: url(chrome-extension://llbcnfanfmjhpedaedhbcnpgeepdnnok/assets/fonts/noto-sans-regular.woff);
+        }
+
+        @font-face {
+            font-family: 'NotoSans_medium_online_security'; 
+            src: url(chrome-extension://llbcnfanfmjhpedaedhbcnpgeepdnnok/assets/fonts/noto-sans-medium.ttf);
+        }
+
+        @font-face {
+            font-family: 'NotoSans_bold_online_security'; 
+            src: url(chrome-extension://llbcnfanfmjhpedaedhbcnpgeepdnnok/assets/fonts/noto-sans-bold.woff);
+        }
+
+        @font-face {
+            font-family: 'NotoSans_semibold_online_security'; 
+            src: url(chrome-extension://llbcnfanfmjhpedaedhbcnpgeepdnnok/assets/fonts/noto-sans-semibold.ttf);
+        }
 </style></head>
 <body>
 <div id="root" style="display: block;">
@@ -956,16 +1035,16 @@
     <div class="portfolio-grid" id="portfolio-grid">
     <div class="project-card reveal" style="background:linear-gradient(135deg,#1e3a8a,#1e1b4b)" onclick="openProjectDetails('1')">
       <div class="card-img">
-        <img src="./index_files/photo-1551288049-bebda4e38f71" alt="CONNECT+">
+        <img src="https://www.image2url.com/r2/default/images/1784294183768-f34aa3a3-b68f-4758-bd35-dbb9beba6c23.jpeg" alt="BM CHAT">
         <div class="card-img-overlay"></div>
         <div class="card-badge">
           <span>🔵</span>
-          <span>CONNECT+</span>
+          <span>BM CHAT</span>
         </div>
       </div>
       <div class="card-body">
-        <div class="card-subtitle">Plataforma de Gestão Empresarial</div>
-        <div class="card-tags"><span class="card-tag">Sistema Web</span><span class="card-tag">Gestão</span></div>
+        <div class="card-subtitle">Aplicação web de mensagens instantâneas</div>
+        <div class="card-tags"><span class="card-tag">Sistema Web</span><span class="card-tag">Chat em Tempo Real</span><span class="card-tag">Design Responsivo</span><span class="card-tag">Tempo Real</span><span class="card-tag">Full Stack</span></div>
       </div>
     </div>
     <div class="project-card reveal" style="background:linear-gradient(135deg,#111827,#1e3a8a)" onclick="openProjectDetails('2')">
@@ -1155,20 +1234,23 @@ function closeMobileMenu() {
 [
   {
     "id": 1,
-    "name": "CONNECT+",
-    "subtitle": "Plataforma de Gestão Empresarial",
+    "name": "BM CHAT",
+    "subtitle": "Aplicação web de mensagens instantâneas",
     "tags": [
       "Sistema Web",
-      "Gestão"
+      "Chat em Tempo Real",
+      "Design Responsivo",
+      "Tempo Real",
+      "Full Stack"
     ],
     "color": "linear-gradient(135deg,#1e3a8a,#1e1b4b)",
     "icon": "🔵",
-    "cover": "./index_files/photo-1551288049-bebda4e38f71",
+    "cover": "https://www.image2url.com/r2/default/images/1784294183768-f34aa3a3-b68f-4758-bd35-dbb9beba6c23.jpeg",
     "images": [
-      "./index_files/photo-1551288049-bebda4e38f71"
+      "https://www.image2url.com/r2/default/images/1784294325596-d86369c2-8291-4b3c-a62c-c293ab0bc26c.jpeg"
     ],
     "videos": [],
-    "description": "Gestão completa empresarial"
+    "description": "BM Chat funciona através de uma arquitetura cliente-servidor com comunicação em tempo real, garantindo que todas as mensagens sejam sincronizadas instantaneamente entre os usuários conectados. O sistema possui autenticação de usuários, gerenciamento de conversas, histórico persistente, notificações em tempo real e uma interface moderna que prioriza desempenho e usabilidade. Toda a navegação ocorre sem recarregamento da página, proporcionando uma experiência semelhante à de aplicativos de mensagens modernos, com foco em velocidade, estabilidade e escalabilidade."
   },
   {
     "id": 2,
