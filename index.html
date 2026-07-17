@@ -1212,21 +1212,58 @@ function closeMobileMenu() {
 </div>
 
 <!-- ── Project Details Modal ───────────────────────────────────── -->
-<div id="project-details-modal" style="display:none;position:fixed;inset:0;z-index:130;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;">
-  <div id="project-details-box" style="width:100%;max-width:980px;max-height:90vh;overflow:auto;background:#0b1220;border:1px solid #1f2937;border-radius:16px;box-shadow:0 25px 60px rgba(0,0,0,0.6);padding:32px;position:relative;">
-    <button class="modal-close" onclick="closeProjectDetails()" style="position:absolute;top:24px;right:24px;background:rgba(255,255,255,0.1);border:none;border-radius:50%;width:36px;height:36px;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;">×</button>
+<div id="project-details-modal" style="display:none;position:fixed;inset:0;z-index:130;background:rgba(2, 6, 23, 0.95);backdrop-filter:blur(16px);align-items:center;justify-content:center;padding:24px;">
+  <button class="modal-close" onclick="closeProjectDetails()" style="position:absolute;top:24px;right:32px;background:none;border:none;color:#9ca3af;font-size:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:color 0.2s;">&times;</button>
+  
+  <div id="project-details-box" style="width:100%;max-width:1440px;height:90vh;display:flex;flex-direction:row;gap:32px;overflow:hidden;position:relative;">
     
-    <div style="display:flex;flex-direction:column;gap:24px;">
-      <div style="padding-right:40px;">
-        <h2 id="pd-title" style="color:#fff;font-weight:900;font-size:28px;margin-bottom:8px;">Projeto</h2>
-        <div id="pd-desc" style="color:#9ca3af;font-size:16px;line-height:1.7;"></div>
+    <!-- LEFT COLUMN: Main Image Gallery -->
+    <div style="flex:2;display:flex;flex-direction:column;min-width:0;position:relative;">
+      <div style="margin-bottom:24px;">
+        <div style="color:#3b82f6;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">Galeria do Projeto</div>
+        <h2 id="pd-title" style="color:#fff;font-weight:800;font-size:36px;margin:0 0 8px 0;line-height:1.1;">Nome do Projeto</h2>
+        <div id="pd-subtitle" style="color:#9ca3af;font-size:16px;">Subtítulo do projeto...</div>
+      </div>
+      
+      <div style="flex:1;position:relative;background:#0f172a;border-radius:16px;border:1px solid #1e293b;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+        <img id="pd-main-img" src="" style="width:100%;height:100%;object-fit:contain;" />
+        
+        <!-- Controls -->
+        <button onclick="prevGalleryImage()" style="position:absolute;left:16px;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;background:rgba(15,23,42,0.8);border:1px solid #334155;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(4px);box-shadow:0 4px 12px rgba(0,0,0,0.5);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <button onclick="nextGalleryImage()" style="position:absolute;right:16px;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;background:rgba(15,23,42,0.8);border:1px solid #334155;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(4px);box-shadow:0 4px 12px rgba(0,0,0,0.5);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+      </div>
+
+      <div style="margin-top:24px;display:flex;align-items:center;justify-content:center;gap:16px;">
+        <div id="pd-counter" style="color:#9ca3af;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;">01 / 01</div>
+        <div id="pd-dots" style="display:flex;gap:8px;"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: Details Sidebar -->
+    <div style="flex:1;background:#0b1220;border:1px solid #1e293b;border-radius:16px;padding:32px;display:flex;flex-direction:column;overflow-y:auto;min-width:320px;max-width:480px;">
+      
+      <div style="margin-bottom:32px;">
+        <h3 style="color:#3b82f6;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin:0 0 16px 0;">Sobre o Projeto</h3>
+        <div id="pd-desc" style="color:#cbd5e1;font-size:15px;line-height:1.7;">Descrição completa...</div>
+      </div>
+
+      <div style="margin-bottom:32px;">
+        <h3 style="color:#3b82f6;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin:0 0 16px 0;">Tecnologias</h3>
+        <div id="pd-tags" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
       </div>
 
       <div>
-        <h3 style="color:#fff;font-weight:800;font-size:14px;margin-bottom:16px;letter-spacing:0.06em;text-transform:uppercase;border-bottom:1px solid #1f2937;padding-bottom:8px;">Galeria de Imagens</h3>
-        <div id="pd-images" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));gap:16px;"></div>
+        <h3 style="color:#3b82f6;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin:0 0 16px 0;">Mais Imagens</h3>
+        <div id="pd-thumbs" style="display:grid;grid-template-columns:repeat(2, 1fr);gap:12px;"></div>
       </div>
+
     </div>
+  </div>
+</div>
   </div>
 </div>
 \n
@@ -1328,22 +1365,110 @@ function hideAllProjects() {
   }
 }
 
+let currentProjectImages = [];
+let currentImageIndex = 0;
+
+function updateGalleryView() {
+  if (currentProjectImages.length === 0) return;
+  const mainImg = document.getElementById('pd-main-img');
+  mainImg.style.opacity = '0';
+  setTimeout(() => {
+    mainImg.src = currentProjectImages[currentImageIndex];
+    mainImg.style.opacity = '1';
+  }, 150);
+
+  // Update counter
+  document.getElementById('pd-counter').textContent = 
+    String(currentImageIndex + 1).padStart(2, '0') + ' / ' + String(currentProjectImages.length).padStart(2, '0');
+
+  // Update dots
+  const dotsHtml = currentProjectImages.map((_, i) => 
+    '<div style="width:24px;height:2px;border-radius:2px;background:' + (i === currentImageIndex ? '#3b82f6' : '#334155') + ';transition:all 0.3s;"></div>'
+  ).join('');
+  document.getElementById('pd-dots').innerHTML = dotsHtml;
+
+  // Update active thumbnail
+  const thumbs = document.querySelectorAll('#pd-thumbs .thumb-item');
+  thumbs.forEach((t, i) => {
+    if (i === currentImageIndex) {
+      t.style.borderColor = '#3b82f6';
+      t.style.opacity = '1';
+    } else {
+      t.style.borderColor = '#1e293b';
+      t.style.opacity = '0.6';
+    }
+  });
+}
+
+function nextGalleryImage() {
+  if (currentProjectImages.length <= 1) return;
+  currentImageIndex = (currentImageIndex + 1) % currentProjectImages.length;
+  updateGalleryView();
+}
+
+function prevGalleryImage() {
+  if (currentProjectImages.length <= 1) return;
+  currentImageIndex = (currentImageIndex - 1 + currentProjectImages.length) % currentProjectImages.length;
+  updateGalleryView();
+}
+
+function setGalleryImage(index) {
+  currentImageIndex = index;
+  updateGalleryView();
+}
+
 function openProjectDetails(id) {
   loadProjects();
   const p = projects.find(x => String(x.id) === String(id));
   if (!p) return;
-  document.getElementById('pd-title').textContent = p.name;
-  document.getElementById('pd-desc').textContent = p.description || p.subtitle;
-  const imgsWrap = document.getElementById('pd-images');
-  imgsWrap.innerHTML = (p.images||[]).map(src => `<img src="${src}" style="width:100%;height:100%;border-radius:12px;object-fit:cover;box-shadow:0 4px 12px rgba(0,0,0,0.3);" />`).join('');
   
+  document.getElementById('pd-title').textContent = p.name || 'Projeto';
+  document.getElementById('pd-subtitle').textContent = p.subtitle || '';
+  document.getElementById('pd-desc').innerHTML = (p.description || '').replace(/\n/g, '<br/>');
+  
+  // Tags
+  const tagsWrap = document.getElementById('pd-tags');
+  tagsWrap.innerHTML = (p.tags||[]).map(t => '<span style="padding:6px 14px;background:rgba(59,130,246,0.1);color:#60a5fa;border:1px solid rgba(59,130,246,0.2);border-radius:6px;font-size:13px;font-weight:500;">'+t+'</span>').join('');
+
+  // Images logic
+  currentProjectImages = p.images || [];
+  if (currentProjectImages.length === 0 && p.cover) {
+    currentProjectImages = [p.cover];
+  }
+  currentImageIndex = 0;
+
+  // Render thumbnails
+  const thumbsWrap = document.getElementById('pd-thumbs');
+  thumbsWrap.innerHTML = currentProjectImages.map((src, i) => 
+    '<div class="thumb-item" onclick="setGalleryImage('+i+')" style="height:80px;border-radius:8px;border:2px solid transparent;overflow:hidden;cursor:pointer;transition:all 0.2s;"><img src="'+src+'" style="width:100%;height:100%;object-fit:cover;" /></div>'
+  ).join('');
+
+  const mainImg = document.getElementById('pd-main-img');
+  mainImg.style.transition = 'opacity 0.15s ease-in-out';
+  
+  updateGalleryView();
+
   const modal = document.getElementById('project-details-modal');
-  if (modal) modal.style.display = 'flex';
+  if (modal) {
+    modal.style.display = 'flex';
+    modal.style.opacity = '0';
+    setTimeout(() => {
+      modal.style.transition = 'opacity 0.3s ease';
+      modal.style.opacity = '1';
+    }, 10);
+  }
+  document.body.style.overflow = 'hidden';
 }
 
 function closeProjectDetails() {
   const modal = document.getElementById('project-details-modal');
-  if (modal) modal.style.display = 'none';
+  if (modal) {
+    modal.style.opacity = '0';
+    setTimeout(() => {
+      modal.style.display = 'none';
+    }, 300);
+  }
+  document.body.style.overflow = '';
 }
 
 document.addEventListener('DOMContentLoaded', renderPortfolio);
