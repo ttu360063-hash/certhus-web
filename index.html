@@ -1678,8 +1678,7 @@ function closeMobileMenu() {
       </div>
       
       <div style="flex:1;position:relative;background:#0f172a;border-radius:16px;border:1px solid #1e293b;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-        <img id="pd-main-img" src="https://www.image2url.com/r2/default/images/1784300233507-fdef1ad5-4105-4417-8692-629b3cc6184b.png" style="width: 100%; height: 100%; object-fit: contain; transition: opacity 0.15s ease-in-out; opacity: 1; display: block;">
-        <video id="pd-main-video" src="" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: contain; transition: opacity 0.15s ease-in-out; opacity: 1; display: none;"></video>
+        <div id="pd-main-media" style="position:absolute;inset:0;width: 100%; height: 100%; transition: opacity 0.15s ease-in-out; opacity: 1; z-index:0;"></div>
         
         <!-- Controls -->
         <button onclick="prevGalleryImage()" style="position:absolute;left:16px;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;background:rgba(15,23,42,0.8);border:1px solid #334155;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(4px);box-shadow:0 4px 12px rgba(0,0,0,0.5);">
@@ -1832,10 +1831,12 @@ function loadProjects() {
 
 function cardHTML(p) {
   const thumb = p.cover || (p.images && p.images.length ? p.images[0] : 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=80');
+  const isVideo = thumb.match(/\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i) || thumb.includes('video');
+  const mediaHtml = isVideo ? `<video src="${thumb}" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;"></video>` : `<img src="${thumb}" alt="${p.name}" onerror="this.onerror=null; this.outerHTML='<video src=\'${thumb}\' autoplay loop muted playsinline style=\'width:100%;height:100%;object-fit:cover;\'></video>';" />`;
   return `
     <div class="project-card reveal" style="background:${p.color}" onclick="openProjectDetails('${p.id}')">
       <div class="card-img">
-        <img src="${thumb}" alt="${p.name}" />
+        ${mediaHtml}
         <div class="card-img-overlay"></div>
         <div class="card-badge">
           <span>${p.icon}</span>
@@ -1881,11 +1882,21 @@ let currentImageIndex = 0;
 
 function updateGalleryView() {
   if (currentProjectImages.length === 0) return;
-  const mainImg = document.getElementById('pd-main-img');
-  mainImg.style.opacity = '0';
+  const mediaContainer = document.getElementById('pd-main-media');
+  const src = currentProjectImages[currentImageIndex] || '';
+  const isVideo = src.match(/\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i) || src.toLowerCase().includes('video') || src.includes('youtube') || src.includes('youtu.be') || src.includes('vimeo');
+
+  if (mediaContainer) mediaContainer.style.opacity = '0';
+  
   setTimeout(() => {
-    mainImg.src = currentProjectImages[currentImageIndex];
-    mainImg.style.opacity = '1';
+    if (mediaContainer) {
+      if (isVideo) {
+        mediaContainer.innerHTML = `<video src="${src}" autoplay loop muted playsinline controls style="width: 100%; height: 100%; object-fit: contain;"></video>`;
+      } else {
+        mediaContainer.innerHTML = `<img src="${src}" style="width: 100%; height: 100%; object-fit: contain;" onerror="this.onerror=null; this.outerHTML='<video src=\'${src}\' autoplay loop muted playsinline controls style=\'width: 100%; height: 100%; object-fit: contain;\'></video>';" />`;
+      }
+      mediaContainer.style.opacity = '1';
+    }
   }, 150);
 
   // Update counter
@@ -1950,12 +1961,14 @@ function openProjectDetails(id) {
 
   // Render thumbnails
   const thumbsWrap = document.getElementById('pd-thumbs');
-  thumbsWrap.innerHTML = currentProjectImages.map((src, i) => 
-    '<div class="thumb-item" onclick="setGalleryImage('+i+')" style="height:80px;border-radius:8px;border:2px solid transparent;overflow:hidden;cursor:pointer;transition:all 0.2s;"><img src="'+src+'" style="width:100%;height:100%;object-fit:cover;" /></div>'
-  ).join('');
+  thumbsWrap.innerHTML = currentProjectImages.map((src, i) => {
+    const isVideo = src.match(/\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i) || src.includes('video');
+    const mediaHtml = isVideo ? '<video src="'+src+'" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;"></video>' : '<img src="'+src+'" style="width:100%;height:100%;object-fit:cover;" onerror="this.onerror=null; this.outerHTML=\'<video src=&quot;'+src+'&quot; autoplay loop muted playsinline style=&quot;width:100%;height:100%;object-fit:cover;&quot;></video>\';" />';
+    return '<div class="thumb-item" onclick="setGalleryImage('+i+')" style="height:80px;border-radius:8px;border:2px solid transparent;overflow:hidden;cursor:pointer;transition:all 0.2s;">' + mediaHtml + '</div>';
+  }).join('');
 
-  const mainImg = document.getElementById('pd-main-img');
-  mainImg.style.transition = 'opacity 0.15s ease-in-out';
+  const mainMedia = document.getElementById('pd-main-media');
+  if (mainMedia) mainMedia.style.transition = 'opacity 0.15s ease-in-out';
   
   updateGalleryView();
 
