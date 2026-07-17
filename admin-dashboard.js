@@ -131,7 +131,8 @@
       + '<div class="cadmin-nav-item" data-tab="services">⚙️ Serviços</div>'
       + '<div class="cadmin-nav-item" data-tab="about">ℹ️ Sobre</div>'
       + '<div class="cadmin-nav-item" data-tab="portfolio">💼 Portfólio</div>'
-      + '<div class="cadmin-nav-item" data-tab="cta">📞 Contato</div>'
+      + '<div class="cadmin-nav-item" data-tab="cta">📞 Contato</div>
+      <div class="cadmin-nav-item" data-tab="footer">🔻 Rodapé</div>'
       + '<div class="cadmin-nav-item" data-tab="advanced" style="margin-top:24px;border-top:1px solid #282c34;padding-top:16px;border-radius:0;">🚀 Publicar</div>'
       + '</div>'
       + '</div>'
@@ -193,26 +194,25 @@
     var container = document.getElementById('cadmin-form-container');
     container.innerHTML = '';
 
+    const createInput = (id, label, val) => '<div class="cadmin-form-group"><label class="cadmin-label">'+label+'</label><input type="text" id="'+id+'" class="cadmin-input" value="'+(val||'')+'"></div>';
+    const createTextarea = (id, label, val) => '<div class="cadmin-form-group"><label class="cadmin-label">'+label+'</label><textarea id="'+id+'" class="cadmin-textarea">'+(val||'')+'</textarea></div>';
+
     if (tab === 'hero') {
       var html = '<h2>Início (Hero)</h2>'
-        + '<div class="cadmin-form-group"><label class="cadmin-label">Título Principal (HTML permitido)</label><input type="text" id="fh-title" class="cadmin-input"></div>'
-        + '<div class="cadmin-form-group"><label class="cadmin-label">Descrição</label><textarea id="fh-desc" class="cadmin-textarea"></textarea></div>'
-        + '<div class="cadmin-form-group"><label class="cadmin-label">Botão 1 - Texto</label><input type="text" id="fh-b1t" class="cadmin-input"></div>'
-        + '<div class="cadmin-form-group"><label class="cadmin-label">Botão 2 - Texto</label><input type="text" id="fh-b2t" class="cadmin-input"></div>'
-        + '<div class="cadmin-form-group"><label class="cadmin-label">Botão 2 - Link</label><input type="text" id="fh-b2l" class="cadmin-input"></div>'
+        + createInput('fh-title', 'Título Principal (HTML permitido)', getDOMValue('#hero .hero-title', 'html'))
+        + createTextarea('fh-desc', 'Descrição', getDOMValue('#hero .hero-desc', 'text'))
+        + createInput('fh-b1t', 'Botão 1 (Esquerdo) - Texto', getDOMValue('#hero .btn-primary', 'text'))
+        + createInput('fh-b2t', 'Botão 2 (Direito) - Texto', getDOMValue('#hero .btn-outline', 'text'))
+        + createInput('fh-b2l', 'Botão 2 (Direito) - Link', getDOMValue('#hero .btn-outline', 'href'))
+        + createInput('fh-logo-alt', 'Texto Alternativo da Logo 3D', getDOMValue('#hero-logo-float img', 'alt'))
         + '<button id="btn-save-hero" class="cadmin-btn">Salvar Alterações</button>';
       container.innerHTML = html;
-
-      document.getElementById('fh-title').value = getDOMValue('#hero .hero-title', 'html');
-      document.getElementById('fh-desc').value = getDOMValue('#hero .hero-desc', 'text');
-      document.getElementById('fh-b1t').value = getDOMValue('#hero .btn-primary', 'text');
-      document.getElementById('fh-b2t').value = getDOMValue('#hero .btn-outline', 'text');
-      document.getElementById('fh-b2l').value = getDOMValue('#hero .btn-outline', 'href');
 
       document.getElementById('btn-save-hero').onclick = function() {
         setDOMValue('#hero .hero-title', 'html', document.getElementById('fh-title').value);
         setDOMValue('#hero .hero-desc', 'text', document.getElementById('fh-desc').value);
         setDOMValue('#hero .btn-primary', 'text', document.getElementById('fh-b1t').value);
+        setDOMValue('#hero-logo-float img', 'alt', document.getElementById('fh-logo-alt').value);
         
         var b2 = document.querySelector('#hero .btn-outline');
         if(b2) {
@@ -223,23 +223,21 @@
       };
     }
     else if (tab === 'services') {
-      container.innerHTML = '<h2>Serviços</h2><p style="color:#a0aabf;margin-bottom:24px;">Edite os 3 serviços principais.</p><div id="srv-list"></div><button id="btn-save-srv" class="cadmin-btn">Salvar Alterações</button>';
+      container.innerHTML = '<h2>Serviços</h2><p style="color:#a0aabf;margin-bottom:24px;">Edite os 3 serviços principais.</p>'
+        + '<div id="srv-list"></div><button id="btn-save-srv" class="cadmin-btn">Salvar Alterações</button>';
       var list = document.getElementById('srv-list');
       var items = document.querySelectorAll('#services-strip .service-item');
-      var srvData = [];
       items.forEach(function(item, idx) {
-        srvData.push({
-          icon: item.querySelector('.service-icon').innerHTML,
-          title: item.querySelector('.service-title').innerText,
-          desc: item.querySelector('.service-desc').innerText
-        });
+        var t = item.querySelector('.service-title').innerText;
+        var d = item.querySelector('.service-desc').innerText;
+        var i = item.querySelector('.service-icon').innerHTML;
         var div = document.createElement('div');
         div.className = 'cadmin-form-group';
         div.style.padding = '16px'; div.style.background = '#1e222b'; div.style.borderRadius = '8px';
         div.innerHTML = '<h4>Serviço '+(idx+1)+'</h4>'
-          + '<label class="cadmin-label" style="margin-top:12px">Título</label><input type="text" id="srv-t-'+idx+'" class="cadmin-input" value="'+srvData[idx].title+'">'
-          + '<label class="cadmin-label" style="margin-top:12px">Descrição</label><textarea id="srv-d-'+idx+'" class="cadmin-textarea" style="min-height:60px">'+srvData[idx].desc+'</textarea>'
-          + '<label class="cadmin-label" style="margin-top:12px">Ícone (SVG)</label><input type="text" id="srv-i-'+idx+'" class="cadmin-input" value=\''+srvData[idx].icon.replace(/'/g,"&apos;")+'\'>';
+          + '<label class="cadmin-label" style="margin-top:12px">Título</label><input type="text" id="srv-t-'+idx+'" class="cadmin-input" value="'+t+'">'
+          + '<label class="cadmin-label" style="margin-top:12px">Descrição</label><textarea id="srv-d-'+idx+'" class="cadmin-textarea" style="min-height:60px">'+d+'</textarea>'
+          + '<label class="cadmin-label" style="margin-top:12px">Ícone (SVG)</label><input type="text" id="srv-i-'+idx+'" class="cadmin-input" value=\''+i.replace(/'/g,"&apos;")+'\'>';
         list.appendChild(div);
       });
 
@@ -254,54 +252,123 @@
     }
     else if (tab === 'about') {
       var html = '<h2>Sobre</h2>'
-        + '<div class="cadmin-form-group"><label class="cadmin-label">Rótulo</label><input type="text" id="fa-lbl" class="cadmin-input"></div>'
-        + '<div class="cadmin-form-group"><label class="cadmin-label">Título</label><input type="text" id="fa-title" class="cadmin-input"></div>'
-        + '<div class="cadmin-form-group"><label class="cadmin-label">Descrição</label><textarea id="fa-desc" class="cadmin-textarea"></textarea></div>'
-        + '<div class="cadmin-form-group"><label class="cadmin-label">Imagem (URL)</label><input type="text" id="fa-img" class="cadmin-input"></div>'
+        + createInput('fa-lbl', 'Rótulo Pequeno', getDOMValue('#about .about-label', 'text'))
+        + createInput('fa-title', 'Título', getDOMValue('#about .about-title', 'text'))
+        + createTextarea('fa-desc', 'Descrição', getDOMValue('#about .about-desc', 'text'))
+        + createInput('fa-img', 'Imagem (URL)', getDOMValue('#about .about-img-wrap img', 'src'))
+        + createInput('fa-img-alt', 'Texto Alternativo da Imagem', getDOMValue('#about .about-img-wrap img', 'alt'))
+        + createInput('fa-btn', 'Texto do Botão', document.querySelector('#about .about-link') ? document.querySelector('#about .about-link').innerText : '')
         + '<button id="btn-save-about" class="cadmin-btn">Salvar Alterações</button>';
       container.innerHTML = html;
-
-      document.getElementById('fa-lbl').value = getDOMValue('#about .about-label', 'text');
-      document.getElementById('fa-title').value = getDOMValue('#about .about-title', 'text');
-      document.getElementById('fa-desc').value = getDOMValue('#about .about-desc', 'text');
-      document.getElementById('fa-img').value = getDOMValue('#about .about-img-wrap img', 'src');
 
       document.getElementById('btn-save-about').onclick = function() {
         setDOMValue('#about .about-label', 'text', document.getElementById('fa-lbl').value);
         setDOMValue('#about .about-title', 'text', document.getElementById('fa-title').value);
         setDOMValue('#about .about-desc', 'text', document.getElementById('fa-desc').value);
         setDOMValue('#about .about-img-wrap img', 'src', document.getElementById('fa-img').value);
+        setDOMValue('#about .about-img-wrap img', 'alt', document.getElementById('fa-img-alt').value);
+        var alink = document.querySelector('#about .about-link');
+        if(alink) alink.innerHTML = document.getElementById('fa-btn').value + ' <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>';
         alert('⚠️ ATENÇÃO: As alterações foram salvas APENAS na sua tela atual.\n\nPara enviar de verdade para o site oficial, vá na aba "🚀 Publicar" e clique em "Publicar Agora".');
       };
     }
     else if (tab === 'portfolio') {
-      renderPortfolioList(container);
+      var headHtml = '<h2>Textos da Seção Portfólio</h2>'
+        + createInput('fp-lbl', 'Rótulo', getDOMValue('#portfolio .portfolio-label', 'text'))
+        + createInput('fp-title', 'Título', getDOMValue('#portfolio .portfolio-title', 'text'))
+        + createInput('fp-btn', 'Texto do Botão', document.querySelector('#portfolio .btn-all') ? document.querySelector('#portfolio .btn-all').innerText : '')
+        + '<button id="btn-save-port-text" class="cadmin-btn" style="margin-bottom:32px;">Salvar Textos</button>';
+      
+      var oldHtml = container.innerHTML;
+      container.innerHTML = headHtml;
+      
+      document.getElementById('btn-save-port-text').onclick = function() {
+        setDOMValue('#portfolio .portfolio-label', 'text', document.getElementById('fp-lbl').value);
+        setDOMValue('#portfolio .portfolio-title', 'text', document.getElementById('fp-title').value);
+        var pbtn = document.querySelector('#portfolio .btn-all');
+        if(pbtn) pbtn.innerHTML = document.getElementById('fp-btn').value + ' <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>';
+        alert('⚠️ Textos do cabeçalho do portfólio salvos no DOM! Vá na aba Publicar para confirmar no servidor.');
+      };
+
+      // Also render the portfolio list editor
+      var listDiv = document.createElement('div');
+      listDiv.id = 'cadmin-port-list-wrap';
+      container.appendChild(listDiv);
+      renderPortfolioList(listDiv);
     }
     else if (tab === 'cta') {
       var html = '<h2>Contato (CTA)</h2>'
-        + '<div class="cadmin-form-group"><label class="cadmin-label">Rótulo / Dica</label><input type="text" id="fc-hint" class="cadmin-input"></div>'
-        + '<div class="cadmin-form-group"><label class="cadmin-label">Título</label><input type="text" id="fc-title" class="cadmin-input"></div>'
-        + '<div class="cadmin-form-group"><label class="cadmin-label">Texto do Botão</label><input type="text" id="fc-btn" class="cadmin-input"></div>'
-        + '<div class="cadmin-form-group"><label class="cadmin-label">Link do Botão</label><input type="text" id="fc-lnk" class="cadmin-input"></div>'
+        + createInput('fc-hint', 'Rótulo / Dica', getDOMValue('#cta .cta-hint', 'text'))
+        + createInput('fc-title', 'Título (HTML permitido)', getDOMValue('#cta .cta-title', 'html'))
+        + createInput('fc-btn', 'Texto do Botão', document.querySelector('#cta .btn-primary') ? document.querySelector('#cta .btn-primary').innerText : '')
+        + createInput('fc-lnk', 'Link do Botão', getDOMValue('#cta .btn-primary', 'href'))
         + '<button id="btn-save-cta" class="cadmin-btn">Salvar Alterações</button>';
       container.innerHTML = html;
-
-      document.getElementById('fc-hint').value = getDOMValue('#cta .cta-hint', 'text');
-      document.getElementById('fc-title').value = getDOMValue('#cta .cta-title', 'html');
-      
-      var ctaBtn = document.querySelector('#cta .btn-primary');
-      if(ctaBtn) {
-        document.getElementById('fc-btn').value = ctaBtn.innerText;
-        document.getElementById('fc-lnk').value = ctaBtn.getAttribute('href') || '';
-      }
 
       document.getElementById('btn-save-cta').onclick = function() {
         setDOMValue('#cta .cta-hint', 'text', document.getElementById('fc-hint').value);
         setDOMValue('#cta .cta-title', 'html', document.getElementById('fc-title').value);
-        if(ctaBtn) {
-          ctaBtn.innerHTML = document.getElementById('fc-btn').value + ' <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>';
-          ctaBtn.setAttribute('href', document.getElementById('fc-lnk').value);
+        var cbtn = document.querySelector('#cta .btn-primary');
+        if(cbtn) {
+           cbtn.innerHTML = document.getElementById('fc-btn').value + ' <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>';
+           cbtn.setAttribute('href', document.getElementById('fc-lnk').value);
         }
+        alert('⚠️ ATENÇÃO: As alterações foram salvas APENAS na sua tela atual.\n\nPara enviar de verdade para o site oficial, vá na aba "🚀 Publicar" e clique em "Publicar Agora".');
+      };
+    }
+    else if (tab === 'footer') {
+      var spans = document.querySelectorAll('.footer-logo-text span');
+      var t1 = spans.length > 0 ? spans[0].innerText : '';
+      var t2 = spans.length > 1 ? spans[1].innerText : '';
+
+      var fCols = document.querySelectorAll('.footer-col h4');
+      var h1 = fCols.length > 0 ? fCols[0].innerText : '';
+      var h2 = fCols.length > 1 ? fCols[1].innerText : '';
+      var h3 = fCols.length > 2 ? fCols[2].innerText : '';
+
+      var fContact = document.querySelectorAll('.footer-contact-item');
+      var c1 = fContact.length > 0 ? fContact[0].innerText.trim() : '';
+      var c2 = fContact.length > 1 ? fContact[1].innerText.trim() : '';
+      var c3 = fContact.length > 2 ? fContact[2].innerText.trim() : '';
+
+      var html = '<h2>Rodapé (Footer)</h2>'
+        + '<h3>Textos da Logo</h3>'
+        + createInput('ff-l1', 'Linha 1', t1)
+        + createInput('ff-l2', 'Linha 2', t2)
+        
+        + '<h3 style="margin-top:24px;">Títulos das Colunas</h3>'
+        + createInput('ff-h1', 'Coluna 1', h1)
+        + createInput('ff-h2', 'Coluna 2', h2)
+        + createInput('ff-h3', 'Coluna 3', h3)
+        
+        + '<h3 style="margin-top:24px;">Informações de Contato</h3>'
+        + createInput('ff-c1', 'Telefone', c1)
+        + createInput('ff-c2', 'Email', c2)
+        + createInput('ff-c3', 'Endereço', c3)
+        
+        + '<h3 style="margin-top:24px;">Copyright</h3>'
+        + createInput('ff-copy', 'Texto Base', getDOMValue('.footer-copy', 'text'))
+        
+        + '<button id="btn-save-footer" class="cadmin-btn" style="margin-top:24px;">Salvar Alterações</button>';
+      container.innerHTML = html;
+
+      document.getElementById('btn-save-footer').onclick = function() {
+        var spans = document.querySelectorAll('.footer-logo-text span');
+        if(spans.length > 0) spans[0].innerText = document.getElementById('ff-l1').value;
+        if(spans.length > 1) spans[1].innerText = document.getElementById('ff-l2').value;
+
+        var fCols = document.querySelectorAll('.footer-col h4');
+        if(fCols.length > 0) fCols[0].innerText = document.getElementById('ff-h1').value;
+        if(fCols.length > 1) fCols[1].innerText = document.getElementById('ff-h2').value;
+        if(fCols.length > 2) fCols[2].innerText = document.getElementById('ff-h3').value;
+
+        var fContact = document.querySelectorAll('.footer-contact-item');
+        if(fContact.length > 0) fContact[0].innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> ' + document.getElementById('ff-c1').value;
+        if(fContact.length > 1) fContact[1].innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> ' + document.getElementById('ff-c2').value;
+        if(fContact.length > 2) fContact[2].innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> ' + document.getElementById('ff-c3').value;
+
+        setDOMValue('.footer-copy', 'text', document.getElementById('ff-copy').value);
+
         alert('⚠️ ATENÇÃO: As alterações foram salvas APENAS na sua tela atual.\n\nPara enviar de verdade para o site oficial, vá na aba "🚀 Publicar" e clique em "Publicar Agora".');
       };
     }
