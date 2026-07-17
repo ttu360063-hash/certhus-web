@@ -1444,6 +1444,65 @@
       padding: 16px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;
     }
     .cadmin-project-item-info { display: flex; flex-direction: column; gap: 4px; }
+  </style><style>
+    #certhus-admin-panel {
+      position: fixed; inset: 0; z-index: 100000;
+      background: #0f1115; color: #fff;
+      font-family: 'Inter', sans-serif;
+      display: flex; flex-direction: row;
+      overflow: hidden;
+    }
+    .cadmin-sidebar {
+      width: 260px; background: #181b21; border-right: 1px solid #282c34;
+      display: flex; flex-direction: column;
+    }
+    .cadmin-brand {
+      padding: 24px; border-bottom: 1px solid #282c34;
+      font-weight: 800; font-size: 18px; color: #60a5fa;
+    }
+    .cadmin-nav {
+      flex: 1; padding: 24px 12px; overflow-y: auto;
+    }
+    .cadmin-nav-item {
+      padding: 12px 16px; margin-bottom: 8px; border-radius: 8px;
+      cursor: pointer; font-size: 14px; font-weight: 500; color: #a0aabf;
+      transition: all 0.2s;
+    }
+    .cadmin-nav-item:hover { background: #282c34; color: #fff; }
+    .cadmin-nav-item.active { background: #2563eb; color: #fff; }
+    .cadmin-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .cadmin-header {
+      height: 70px; border-bottom: 1px solid #282c34; background: #181b21;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px;
+    }
+    .cadmin-content { flex: 1; padding: 32px; overflow-y: auto; background: #0f1115; }
+    .cadmin-form-group { margin-bottom: 24px; }
+    .cadmin-label { display: block; font-size: 13px; color: #a0aabf; margin-bottom: 8px; font-weight: 600; }
+    .cadmin-input, .cadmin-textarea {
+      width: 100%; padding: 12px 16px; border-radius: 8px;
+      background: #1e222b; border: 1px solid #282c34; color: #fff;
+      font-family: 'Inter', sans-serif; font-size: 14px; outline: none;
+    }
+    .cadmin-textarea { resize: vertical; min-height: 100px; }
+    .cadmin-btn {
+      padding: 12px 24px; border-radius: 8px; background: #2563eb; color: #fff;
+      font-weight: 600; border: none; cursor: pointer; font-size: 14px;
+      transition: background 0.2s;
+    }
+    .cadmin-btn:hover { background: #1d4ed8; }
+    .cadmin-btn-outline {
+      padding: 12px 24px; border-radius: 8px; background: transparent; color: #60a5fa;
+      font-weight: 600; border: 1px solid #2563eb; cursor: pointer; font-size: 14px;
+    }
+    .cadmin-btn-outline:hover { background: rgba(37,99,235,0.1); }
+    .cadmin-btn-danger { background: #ef4444; }
+    .cadmin-btn-danger:hover { background: #dc2626; }
+    .cadmin-project-item {
+      background: #1e222b; border: 1px solid #282c34; border-radius: 8px;
+      padding: 16px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .cadmin-project-item-info { display: flex; flex-direction: column; gap: 4px; }
   </style></head>
 <body style="" cz-shortcut-listen="true">
 <div id="root" style="display: block;">
@@ -1582,7 +1641,7 @@
     <div class="portfolio-grid" id="portfolio-grid">
     <div class="project-card reveal" style="background:linear-gradient(135deg,#1e3a8a,#1e1b4b)" onclick="openProjectDetails('1')">
       <div class="card-img">
-        <img src="https://www.image2url.com/r2/default/images/1784294183768-f34aa3a3-b68f-4758-bd35-dbb9beba6c23.jpeg" alt="BM CHAT">
+        <img src="https://www.image2url.com/r2/default/images/1784294183768-f34aa3a3-b68f-4758-bd35-dbb9beba6c23.jpeg" alt="BM CHAT" onerror="this.onerror=null; this.outerHTML='&lt;video src='https://www.image2url.com/r2/default/images/1784294183768-f34aa3a3-b68f-4758-bd35-dbb9beba6c23.jpeg' autoplay loop muted playsinline style='width:100%;height:100%;object-fit:cover;'&gt;&lt;/video&gt;';">
         <div class="card-img-overlay"></div>
         <div class="card-badge">
           <span>🔵</span>
@@ -1596,7 +1655,7 @@
     </div>
     <div class="project-card reveal" style="background:linear-gradient(135deg,#111827,#1e3a8a)" onclick="openProjectDetails('2')">
       <div class="card-img">
-        <img src="https://www.image2url.com/r2/default/images/1784299822766-4bd56020-9361-470c-a745-bf08a7299169.jpeg" alt="APLICATIVO DOWNLOADER">
+        <img src="https://www.image2url.com/r2/default/images/1784299822766-4bd56020-9361-470c-a745-bf08a7299169.jpeg" alt="APLICATIVO DOWNLOADER" onerror="this.onerror=null; this.outerHTML='&lt;video src='https://www.image2url.com/r2/default/images/1784299822766-4bd56020-9361-470c-a745-bf08a7299169.jpeg' autoplay loop muted playsinline style='width:100%;height:100%;object-fit:cover;'&gt;&lt;/video&gt;';">
         <div class="card-img-overlay"></div>
         <div class="card-badge">
           <span>🡇</span>
@@ -1610,7 +1669,7 @@
     </div>
     <div class="project-card reveal" style="background:linear-gradient(135deg,#1e3a8a,#1e1b4b)" onclick="openProjectDetails('1784302551586')">
       <div class="card-img">
-        <img src="https://www.image2url.com/r2/default/images/1784302532765-9d3a9c66-a4ea-463d-bda4-af42e75c70c6.png" alt="OGUSMÃO DIGITAL">
+        <img src="https://www.image2url.com/r2/default/images/1784302532765-9d3a9c66-a4ea-463d-bda4-af42e75c70c6.png" alt="OGUSMÃO DIGITAL" onerror="this.onerror=null; this.outerHTML='&lt;video src='https://www.image2url.com/r2/default/images/1784302532765-9d3a9c66-a4ea-463d-bda4-af42e75c70c6.png' autoplay loop muted playsinline style='width:100%;height:100%;object-fit:cover;'&gt;&lt;/video&gt;';">
         <div class="card-img-overlay"></div>
         <div class="card-badge">
           <span>🚀</span>
@@ -1624,7 +1683,7 @@
     </div>
     <div class="project-card reveal" style="background:linear-gradient(135deg,#1e3a8a,#1e1b4b)" onclick="openProjectDetails('1784307318470')">
       <div class="card-img">
-        <img src="https://www.image2url.com/r2/default/images/1784307293494-23db345c-d0f1-4b82-b647-e70f4f7c0047.webp" alt="LIBERA OFF">
+        <img src="https://www.image2url.com/r2/default/images/1784307293494-23db345c-d0f1-4b82-b647-e70f4f7c0047.webp" alt="LIBERA OFF" onerror="this.onerror=null; this.outerHTML='&lt;video src='https://www.image2url.com/r2/default/images/1784307293494-23db345c-d0f1-4b82-b647-e70f4f7c0047.webp' autoplay loop muted playsinline style='width:100%;height:100%;object-fit:cover;'&gt;&lt;/video&gt;';">
         <div class="card-img-overlay"></div>
         <div class="card-badge">
           <span>🔊</span>
@@ -1791,12 +1850,12 @@ function closeMobileMenu() {
     <div style="flex:2;display:flex;flex-direction:column;min-width:0;position:relative;">
       <div style="margin-bottom:24px;">
         <div style="color:#3b82f6;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">Galeria do Projeto</div>
-        <h2 id="pd-title" style="color:#fff;font-weight:800;font-size:36px;margin:0 0 8px 0;line-height:1.1;">BM CHAT</h2>
-        <div id="pd-subtitle" style="color:#9ca3af;font-size:16px;">Aplicação web de mensagens instantâneas</div>
+        <h2 id="pd-title" style="color:#fff;font-weight:800;font-size:36px;margin:0 0 8px 0;line-height:1.1;">APLICATIVO DOWNLOADER</h2>
+        <div id="pd-subtitle" style="color:#9ca3af;font-size:16px;">Aplicativo de automação para download de arquivos de áudio.</div>
       </div>
       
       <div style="flex:1;position:relative;background:#0f172a;border-radius:16px;border:1px solid #1e293b;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-        <div id="pd-main-media" style="position:absolute;inset:0;width: 100%; height: 100%; transition: opacity 0.15s ease-in-out; opacity: 1; z-index:0;"></div>
+        <div id="pd-main-media" style="position: absolute; inset: 0px; width: 100%; height: 100%; transition: opacity 0.15s ease-in-out; opacity: 1; z-index: 0;"><video src="https://www.image2url.com/r2/default/videos/1784036328144-3db500f2-2fea-47f0-b647-8e4497488a49.mp4" autoplay="" loop="" muted="" playsinline="" controls="" style="width: 100%; height: 100%; object-fit: contain;"></video></div>
         
         <!-- Controls -->
         <button onclick="prevGalleryImage()" style="position:absolute;left:16px;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;background:rgba(15,23,42,0.8);border:1px solid #334155;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(4px);box-shadow:0 4px 12px rgba(0,0,0,0.5);">
@@ -1808,8 +1867,8 @@ function closeMobileMenu() {
       </div>
 
       <div style="margin-top:24px;display:flex;align-items:center;justify-content:center;gap:16px;">
-        <div id="pd-counter" style="color:#9ca3af;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;">05 / 05</div>
-        <div id="pd-dots" style="display:flex;gap:8px;"><div style="width:24px;height:2px;border-radius:2px;background:#334155;transition:all 0.3s;"></div><div style="width:24px;height:2px;border-radius:2px;background:#334155;transition:all 0.3s;"></div><div style="width:24px;height:2px;border-radius:2px;background:#334155;transition:all 0.3s;"></div><div style="width:24px;height:2px;border-radius:2px;background:#334155;transition:all 0.3s;"></div><div style="width:24px;height:2px;border-radius:2px;background:#3b82f6;transition:all 0.3s;"></div></div>
+        <div id="pd-counter" style="color:#9ca3af;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;">04 / 04</div>
+        <div id="pd-dots" style="display:flex;gap:8px;"><div style="width:24px;height:2px;border-radius:2px;background:#334155;transition:all 0.3s;"></div><div style="width:24px;height:2px;border-radius:2px;background:#334155;transition:all 0.3s;"></div><div style="width:24px;height:2px;border-radius:2px;background:#334155;transition:all 0.3s;"></div><div style="width:24px;height:2px;border-radius:2px;background:#3b82f6;transition:all 0.3s;"></div></div>
       </div>
     </div>
 
@@ -1818,17 +1877,17 @@ function closeMobileMenu() {
       
       <div style="margin-bottom:32px;">
         <h3 style="color:#3b82f6;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin:0 0 16px 0;">Sobre o Projeto</h3>
-        <div id="pd-desc" style="color:#cbd5e1;font-size:15px;line-height:1.7;">BM Chat funciona através de uma arquitetura cliente-servidor com comunicação em tempo real, garantindo que todas as mensagens sejam sincronizadas instantaneamente entre os usuários conectados. O sistema possui autenticação de usuários, gerenciamento de conversas, histórico persistente, notificações em tempo real e uma interface moderna que prioriza desempenho e usabilidade. Toda a navegação ocorre sem recarregamento da página, proporcionando uma experiência semelhante à de aplicativos de mensagens modernos, com foco em velocidade, estabilidade e escalabilidade.</div>
+        <div id="pd-desc" style="color:#cbd5e1;font-size:15px;line-height:1.7;">Aplicativo desktop desenvolvido sob encomenda para automatizar o download de arquivos de áudio específicos. O sistema permite que o usuário selecione o diretório de destino e realiza todo o processo de download e organização dos arquivos de forma automática, reduzindo tarefas repetitivas e aumentando a produtividade. O projeto foi desenvolvido com foco em desempenho, confiabilidade e facilidade de uso, oferecendo uma solução personalizada para atender às necessidades do cliente.</div>
       </div>
 
       <div style="margin-bottom:32px;">
         <h3 style="color:#3b82f6;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin:0 0 16px 0;">Tecnologias</h3>
-        <div id="pd-tags" style="display:flex;flex-wrap:wrap;gap:8px;"><span style="padding:6px 14px;background:rgba(59,130,246,0.1);color:#60a5fa;border:1px solid rgba(59,130,246,0.2);border-radius:6px;font-size:13px;font-weight:500;">Sistema Web</span><span style="padding:6px 14px;background:rgba(59,130,246,0.1);color:#60a5fa;border:1px solid rgba(59,130,246,0.2);border-radius:6px;font-size:13px;font-weight:500;">Chat em Tempo Real</span><span style="padding:6px 14px;background:rgba(59,130,246,0.1);color:#60a5fa;border:1px solid rgba(59,130,246,0.2);border-radius:6px;font-size:13px;font-weight:500;">Design Responsivo</span><span style="padding:6px 14px;background:rgba(59,130,246,0.1);color:#60a5fa;border:1px solid rgba(59,130,246,0.2);border-radius:6px;font-size:13px;font-weight:500;">Tempo Real</span><span style="padding:6px 14px;background:rgba(59,130,246,0.1);color:#60a5fa;border:1px solid rgba(59,130,246,0.2);border-radius:6px;font-size:13px;font-weight:500;">Full Stack</span></div>
+        <div id="pd-tags" style="display:flex;flex-wrap:wrap;gap:8px;"><span style="padding:6px 14px;background:rgba(59,130,246,0.1);color:#60a5fa;border:1px solid rgba(59,130,246,0.2);border-radius:6px;font-size:13px;font-weight:500;">Automação</span><span style="padding:6px 14px;background:rgba(59,130,246,0.1);color:#60a5fa;border:1px solid rgba(59,130,246,0.2);border-radius:6px;font-size:13px;font-weight:500;">Aplicativo Desktop</span><span style="padding:6px 14px;background:rgba(59,130,246,0.1);color:#60a5fa;border:1px solid rgba(59,130,246,0.2);border-radius:6px;font-size:13px;font-weight:500;">Download de Arquivos</span><span style="padding:6px 14px;background:rgba(59,130,246,0.1);color:#60a5fa;border:1px solid rgba(59,130,246,0.2);border-radius:6px;font-size:13px;font-weight:500;">Software Sob Encomenda</span><span style="padding:6px 14px;background:rgba(59,130,246,0.1);color:#60a5fa;border:1px solid rgba(59,130,246,0.2);border-radius:6px;font-size:13px;font-weight:500;">Produtividade</span></div>
       </div>
 
       <div>
         <h3 style="color:#3b82f6;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin:0 0 16px 0;">Mais Imagens</h3>
-        <div id="pd-thumbs" style="display:grid;grid-template-columns:repeat(2, 1fr);gap:12px;"><div class="thumb-item" onclick="setGalleryImage(0)" style="height: 80px; border-radius: 8px; border: 2px solid rgb(30, 41, 59); overflow: hidden; cursor: pointer; transition: 0.2s; opacity: 0.6;"><img src="https://www.image2url.com/r2/default/images/1784297712685-b0f668d0-8914-4a20-bce0-e1e131e59852.png" style="width:100%;height:100%;object-fit:cover;"></div><div class="thumb-item" onclick="setGalleryImage(1)" style="height: 80px; border-radius: 8px; border: 2px solid rgb(30, 41, 59); overflow: hidden; cursor: pointer; transition: 0.2s; opacity: 0.6;"><img src="https://www.image2url.com/r2/default/images/1784294325596-d86369c2-8291-4b3c-a62c-c293ab0bc26c.jpeg" style="width:100%;height:100%;object-fit:cover;"></div><div class="thumb-item" onclick="setGalleryImage(2)" style="height: 80px; border-radius: 8px; border: 2px solid rgb(30, 41, 59); overflow: hidden; cursor: pointer; transition: 0.2s; opacity: 0.6;"><img src="https://www.image2url.com/r2/default/images/1784297785542-3c33ee9d-fe3d-4704-b96c-ed1821e9c9f6.png" style="width:100%;height:100%;object-fit:cover;"></div><div class="thumb-item" onclick="setGalleryImage(3)" style="height: 80px; border-radius: 8px; border: 2px solid rgb(30, 41, 59); overflow: hidden; cursor: pointer; transition: 0.2s; opacity: 0.6;"><img src="https://www.image2url.com/r2/default/images/1784297815501-de60de6a-c111-481c-b52b-854c82144b77.jpeg" style="width:100%;height:100%;object-fit:cover;"></div><div class="thumb-item" onclick="setGalleryImage(4)" style="height: 80px; border-radius: 8px; border: 2px solid rgb(59, 130, 246); overflow: hidden; cursor: pointer; transition: 0.2s; opacity: 1;"><img src="https://www.image2url.com/r2/default/videos/1784036328144-3db500f2-2fea-47f0-b647-8e4497488a49.mp4" style="width:100%;height:100%;object-fit:cover;"></div></div>
+        <div id="pd-thumbs" style="display:grid;grid-template-columns:repeat(2, 1fr);gap:12px;"><div class="thumb-item" onclick="setGalleryImage(0)" style="height: 80px; border-radius: 8px; border: 2px solid rgb(30, 41, 59); overflow: hidden; cursor: pointer; transition: 0.2s; opacity: 0.6;"><img src="https://www.image2url.com/r2/default/images/1784299949565-fac1a78d-06cc-49ba-85b7-c0f5efb6a750.png" style="width:100%;height:100%;object-fit:cover;" onerror="this.onerror=null; this.outerHTML='&lt;video src=&quot;https://www.image2url.com/r2/default/images/1784299949565-fac1a78d-06cc-49ba-85b7-c0f5efb6a750.png&quot; autoplay loop muted playsinline style=&quot;width:100%;height:100%;object-fit:cover;&quot;&gt;&lt;/video&gt;';"></div><div class="thumb-item" onclick="setGalleryImage(1)" style="height: 80px; border-radius: 8px; border: 2px solid rgb(30, 41, 59); overflow: hidden; cursor: pointer; transition: 0.2s; opacity: 0.6;"><img src="https://www.image2url.com/r2/default/images/1784300116021-88a7c93e-b60d-4764-98f2-ad376133729b.png" style="width:100%;height:100%;object-fit:cover;" onerror="this.onerror=null; this.outerHTML='&lt;video src=&quot;https://www.image2url.com/r2/default/images/1784300116021-88a7c93e-b60d-4764-98f2-ad376133729b.png&quot; autoplay loop muted playsinline style=&quot;width:100%;height:100%;object-fit:cover;&quot;&gt;&lt;/video&gt;';"></div><div class="thumb-item" onclick="setGalleryImage(2)" style="height: 80px; border-radius: 8px; border: 2px solid rgb(30, 41, 59); overflow: hidden; cursor: pointer; transition: 0.2s; opacity: 0.6;"><img src="https://www.image2url.com/r2/default/images/1784300233507-fdef1ad5-4105-4417-8692-629b3cc6184b.png" style="width:100%;height:100%;object-fit:cover;" onerror="this.onerror=null; this.outerHTML='&lt;video src=&quot;https://www.image2url.com/r2/default/images/1784300233507-fdef1ad5-4105-4417-8692-629b3cc6184b.png&quot; autoplay loop muted playsinline style=&quot;width:100%;height:100%;object-fit:cover;&quot;&gt;&lt;/video&gt;';"></div><div class="thumb-item" onclick="setGalleryImage(3)" style="height: 80px; border-radius: 8px; border: 2px solid rgb(59, 130, 246); overflow: hidden; cursor: pointer; transition: 0.2s; opacity: 1;"><video src="https://www.image2url.com/r2/default/videos/1784036328144-3db500f2-2fea-47f0-b647-8e4497488a49.mp4" autoplay="" loop="" muted="" playsinline="" style="width:100%;height:100%;object-fit:cover;"></video></div></div>
       </div>
 
     </div>
@@ -1854,6 +1913,7 @@ function closeMobileMenu() {
     "icon": "🔵",
     "cover": "https://www.image2url.com/r2/default/images/1784294183768-f34aa3a3-b68f-4758-bd35-dbb9beba6c23.jpeg",
     "images": [
+      "https://www.image2url.com/r2/default/videos/1784036328144-3db500f2-2fea-47f0-b647-8e4497488a49.mp4",
       "https://www.image2url.com/r2/default/images/1784297712685-b0f668d0-8914-4a20-bce0-e1e131e59852.png",
       "https://www.image2url.com/r2/default/images/1784294325596-d86369c2-8291-4b3c-a62c-c293ab0bc26c.jpeg",
       "https://www.image2url.com/r2/default/images/1784297785542-3c33ee9d-fe3d-4704-b96c-ed1821e9c9f6.png",
@@ -1879,8 +1939,7 @@ function closeMobileMenu() {
     "images": [
       "https://www.image2url.com/r2/default/images/1784299949565-fac1a78d-06cc-49ba-85b7-c0f5efb6a750.png",
       "https://www.image2url.com/r2/default/images/1784300116021-88a7c93e-b60d-4764-98f2-ad376133729b.png",
-      "https://www.image2url.com/r2/default/images/1784300233507-fdef1ad5-4105-4417-8692-629b3cc6184b.png",
-      "https://www.image2url.com/r2/default/videos/1784036328144-3db500f2-2fea-47f0-b647-8e4497488a49.mp4"
+      "https://www.image2url.com/r2/default/images/1784300233507-fdef1ad5-4105-4417-8692-629b3cc6184b.png"
     ],
     "videos": [],
     "description": "Aplicativo desktop desenvolvido sob encomenda para automatizar o download de arquivos de áudio específicos. O sistema permite que o usuário selecione o diretório de destino e realiza todo o processo de download e organização dos arquivos de forma automática, reduzindo tarefas repetitivas e aumentando a produtividade. O projeto foi desenvolvido com foco em desempenho, confiabilidade e facilidade de uso, oferecendo uma solução personalizada para atender às necessidades do cliente."
@@ -1901,6 +1960,7 @@ function closeMobileMenu() {
     ],
     "cover": "https://www.image2url.com/r2/default/images/1784302532765-9d3a9c66-a4ea-463d-bda4-af42e75c70c6.png",
     "images": [
+      "https://www.image2url.com/r2/default/videos/1784318336448-de08de34-e179-4dcf-b23f-1f6b8d5adf55.mp4",
       "https://www.image2url.com/r2/default/images/1784302360183-003b7ff7-bfb2-46d1-a191-95b7ec64842f.png",
       "https://www.image2url.com/r2/default/images/1784302854469-9ef191f0-b018-4f96-aa00-ad9c4fb76e6e.png",
       "https://www.image2url.com/r2/default/images/1784302876841-ab7c5f06-f7bf-4ba8-8763-8e1a99582369.png",
