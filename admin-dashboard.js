@@ -219,7 +219,7 @@
           b2.innerHTML = document.getElementById('fh-b2t').value + ' <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>';
           b2.setAttribute('href', document.getElementById('fh-b2l').value);
         }
-        alert('Salvo no DOM!');
+        alert('⚠️ ATENÇÃO: As alterações foram salvas APENAS na sua tela atual.\n\nPara enviar de verdade para o site oficial, vá na aba "🚀 Publicar" e clique em "Publicar Agora".');
       };
     }
     else if (tab === 'services') {
@@ -249,7 +249,7 @@
           item.querySelector('.service-desc').innerText = document.getElementById('srv-d-'+idx).value;
           item.querySelector('.service-icon').innerHTML = document.getElementById('srv-i-'+idx).value;
         });
-        alert('Salvo no DOM!');
+        alert('⚠️ ATENÇÃO: As alterações foram salvas APENAS na sua tela atual.\n\nPara enviar de verdade para o site oficial, vá na aba "🚀 Publicar" e clique em "Publicar Agora".');
       };
     }
     else if (tab === 'about') {
@@ -271,7 +271,7 @@
         setDOMValue('#about .about-title', 'text', document.getElementById('fa-title').value);
         setDOMValue('#about .about-desc', 'text', document.getElementById('fa-desc').value);
         setDOMValue('#about .about-img-wrap img', 'src', document.getElementById('fa-img').value);
-        alert('Salvo no DOM!');
+        alert('⚠️ ATENÇÃO: As alterações foram salvas APENAS na sua tela atual.\n\nPara enviar de verdade para o site oficial, vá na aba "🚀 Publicar" e clique em "Publicar Agora".');
       };
     }
     else if (tab === 'portfolio') {
@@ -302,7 +302,7 @@
           ctaBtn.innerHTML = document.getElementById('fc-btn').value + ' <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>';
           ctaBtn.setAttribute('href', document.getElementById('fc-lnk').value);
         }
-        alert('Salvo no DOM!');
+        alert('⚠️ ATENÇÃO: As alterações foram salvas APENAS na sua tela atual.\n\nPara enviar de verdade para o site oficial, vá na aba "🚀 Publicar" e clique em "Publicar Agora".');
       };
     }
     else if (tab === 'advanced') {
@@ -345,14 +345,17 @@
           if (data.success) {
             status.style.color = '#10b981';
             status.innerText = '✅ Sucesso! O novo site foi enviado ao GitHub e estará no ar em poucos instantes.';
+            alert('🎉 SUCESSO! As alterações foram enviadas para o servidor com sucesso!\nO GitHub vai processar e a Vercel vai publicar o site novo em cerca de 1 a 2 minutos.\n\nVocê já pode fechar o painel e acompanhar a atualização do seu link público!');
           } else {
             status.style.color = '#ef4444';
             status.innerText = '❌ Erro: ' + (data.error || 'Falha ao salvar');
+            alert('❌ O SERVIDOR RECUSOU A PUBLICAÇÃO! ❌\n\nDetalhes do Erro:\n' + JSON.stringify(data, null, 2) + '\n\nPor favor, tire uma foto ou copie essa mensagem e envie no chat para que eu possa consertar!');
           }
         })
         .catch(function(err) {
           status.style.color = '#ef4444';
           status.innerText = '❌ Erro de conexão: ' + err.message;
+          alert('❌ ERRO CRÍTICO NA API OU CONEXÃO ❌\n\nDetalhes do Erro:\n' + err.message + '\n\nPor favor, tire uma foto ou copie essa mensagem e envie no chat para que eu possa consertar!');
         });
       };
     }
