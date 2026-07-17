@@ -131,8 +131,8 @@
       + '<div class="cadmin-nav-item" data-tab="services">⚙️ Serviços</div>'
       + '<div class="cadmin-nav-item" data-tab="about">ℹ️ Sobre</div>'
       + '<div class="cadmin-nav-item" data-tab="portfolio">💼 Portfólio</div>'
-      + '<div class="cadmin-nav-item" data-tab="cta">📞 Contato</div>
-      <div class="cadmin-nav-item" data-tab="footer">🔻 Rodapé</div>'
+      + '<div class="cadmin-nav-item" data-tab="cta">📞 Contato</div>'
+      + '<div class="cadmin-nav-item" data-tab="footer">🔻 Rodapé</div>'
       + '<div class="cadmin-nav-item" data-tab="advanced" style="margin-top:24px;border-top:1px solid #282c34;padding-top:16px;border-radius:0;">🚀 Publicar</div>'
       + '</div>'
       + '</div>'
