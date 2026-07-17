@@ -333,7 +333,7 @@
         fetch('/api/save', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ secret: _adminSecret, content: finalHTML })
+          body: JSON.stringify({ password: _adminSecret, html: finalHTML })
         })
         .then(function(res) { return res.json(); })
         .then(function(data) {
