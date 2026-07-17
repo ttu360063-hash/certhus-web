@@ -712,6 +712,37 @@
       outline: 2px solid #3b82f6 !important;
       outline-offset: 0 !important;
     }
+  
+    @media (max-width: 900px) {
+      #project-details-box {
+        flex-direction: column !important;
+        overflow-y: auto !important;
+        height: 100% !important;
+        border-radius: 0;
+      }
+      #project-details-box > div:first-child {
+        min-height: 300px;
+        flex: none !important;
+      }
+      #project-details-box > div:last-child {
+        flex: none !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        padding: 24px !important;
+        border: none !important;
+        border-top: 1px solid #1e293b !important;
+        border-radius: 0 !important;
+      }
+      #project-details-modal {
+        padding: 0 !important;
+      }
+      .modal-close {
+        top: 16px !important;
+        right: 16px !important;
+        width: 36px !important;
+        height: 36px !important;
+      }
+    }
   </style><style>
         @font-face {
             font-family: 'NotoSans_online_security'; 
@@ -791,6 +822,37 @@
       padding: 16px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;
     }
     .cadmin-project-item-info { display: flex; flex-direction: column; gap: 4px; }
+
+    @media (max-width: 900px) {
+      #project-details-box {
+        flex-direction: column !important;
+        overflow-y: auto !important;
+        height: 100% !important;
+        border-radius: 0;
+      }
+      #project-details-box > div:first-child {
+        min-height: 300px;
+        flex: none !important;
+      }
+      #project-details-box > div:last-child {
+        flex: none !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        padding: 24px !important;
+        border: none !important;
+        border-top: 1px solid #1e293b !important;
+        border-radius: 0 !important;
+      }
+      #project-details-modal {
+        padding: 0 !important;
+      }
+      .modal-close {
+        top: 16px !important;
+        right: 16px !important;
+        width: 36px !important;
+        height: 36px !important;
+      }
+    }
   </style><style>
         @font-face {
             font-family: 'NotoSans_online_security'; 
@@ -1244,18 +1306,25 @@
       <div class="footer-col reveal stagger-2 visible">
         <h4>NAVEGAÇÃO</h4>
         <div class="footer-nav-grid">
-          <a href="https://preview--animated-web-page.lumi.ing/certhus-export.html#hero">Início</a>
-          <a href="https://preview--animated-web-page.lumi.ing/certhus-export.html#about">Sobre</a>
-          <a href="https://preview--animated-web-page.lumi.ing/certhus-export.html#services-strip">Serviços</a>
-          <a href="https://preview--animated-web-page.lumi.ing/certhus-export.html#portfolio">Portfólio</a>
-          <a href="https://preview--animated-web-page.lumi.ing/certhus-export.html#cta">Contato</a>
+          <a href="#hero" onclick="return scrollToSection('hero')">Início</a>
+          <a href="#about" onclick="return scrollToSection('about')">Sobre</a>
+          <a href="#services-strip" onclick="return scrollToSection('services-strip')">Serviços</a>
+          <a href="#portfolio" onclick="return scrollToSection('portfolio')">Portfólio</a>
+          <a href="#cta" onclick="return scrollToSection('cta')">Contato</a>
         </div>
       </div>
       <div class="footer-col reveal stagger-3 visible">
+<<<<<<< HEAD
         <h4>SERVIÇOS</h4>
-        <a href="https://preview--animated-web-page.lumi.ing/certhus-export.html#">Criação de Sites</a>
-        <a href="https://preview--animated-web-page.lumi.ing/certhus-export.html#">Aplicativos</a>
-        <a href="https://preview--animated-web-page.lumi.ing/certhus-export.html#">Automação de Sistemas</a>
+        <a href="#services-strip" onclick="return scrollToSection('services-strip')">Criação de Sites</a>
+        <a href="#services-strip" onclick="return scrollToSection('services-strip')">Aplicativos</a>
+        <a href="#services-strip" onclick="return scrollToSection('services-strip')">Automação de Sistemas</a>
+=======
+        <h4>Serviços</h4>
+        <a href="#services-strip" onclick="return scrollToSection('services-strip')">Criação de Sites</a>
+        <a href="#services-strip" onclick="return scrollToSection('services-strip')">Aplicativos</a>
+        <a href="#services-strip" onclick="return scrollToSection('services-strip')">Automação de Sistemas</a>
+>>>>>>> ba788e5 (Fix footer links and make project modal responsive for mobile)
       </div>
       <div class="footer-col reveal stagger-4 visible">
         <h4>CONTATO</h4>
