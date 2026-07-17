@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- saved from url=(0065)https://preview-%2Danimated-web-page.lumi.ing/certhus-export.html -->
 <html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -733,12 +732,91 @@
             font-family: 'NotoSans_semibold_online_security'; 
             src: url(chrome-extension://llbcnfanfmjhpedaedhbcnpgeepdnnok/assets/fonts/noto-sans-semibold.ttf);
         }
+</style><style>
+    #certhus-admin-panel {
+      position: fixed; inset: 0; z-index: 100000;
+      background: #0f1115; color: #fff;
+      font-family: 'Inter', sans-serif;
+      display: flex; flex-direction: row;
+      overflow: hidden;
+    }
+    .cadmin-sidebar {
+      width: 260px; background: #181b21; border-right: 1px solid #282c34;
+      display: flex; flex-direction: column;
+    }
+    .cadmin-brand {
+      padding: 24px; border-bottom: 1px solid #282c34;
+      font-weight: 800; font-size: 18px; color: #60a5fa;
+    }
+    .cadmin-nav {
+      flex: 1; padding: 24px 12px; overflow-y: auto;
+    }
+    .cadmin-nav-item {
+      padding: 12px 16px; margin-bottom: 8px; border-radius: 8px;
+      cursor: pointer; font-size: 14px; font-weight: 500; color: #a0aabf;
+      transition: all 0.2s;
+    }
+    .cadmin-nav-item:hover { background: #282c34; color: #fff; }
+    .cadmin-nav-item.active { background: #2563eb; color: #fff; }
+    .cadmin-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .cadmin-header {
+      height: 70px; border-bottom: 1px solid #282c34; background: #181b21;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px;
+    }
+    .cadmin-content { flex: 1; padding: 32px; overflow-y: auto; background: #0f1115; }
+    .cadmin-form-group { margin-bottom: 24px; }
+    .cadmin-label { display: block; font-size: 13px; color: #a0aabf; margin-bottom: 8px; font-weight: 600; }
+    .cadmin-input, .cadmin-textarea {
+      width: 100%; padding: 12px 16px; border-radius: 8px;
+      background: #1e222b; border: 1px solid #282c34; color: #fff;
+      font-family: 'Inter', sans-serif; font-size: 14px; outline: none;
+    }
+    .cadmin-textarea { resize: vertical; min-height: 100px; }
+    .cadmin-btn {
+      padding: 12px 24px; border-radius: 8px; background: #2563eb; color: #fff;
+      font-weight: 600; border: none; cursor: pointer; font-size: 14px;
+      transition: background 0.2s;
+    }
+    .cadmin-btn:hover { background: #1d4ed8; }
+    .cadmin-btn-outline {
+      padding: 12px 24px; border-radius: 8px; background: transparent; color: #60a5fa;
+      font-weight: 600; border: 1px solid #2563eb; cursor: pointer; font-size: 14px;
+    }
+    .cadmin-btn-outline:hover { background: rgba(37,99,235,0.1); }
+    .cadmin-btn-danger { background: #ef4444; }
+    .cadmin-btn-danger:hover { background: #dc2626; }
+    .cadmin-project-item {
+      background: #1e222b; border: 1px solid #282c34; border-radius: 8px;
+      padding: 16px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .cadmin-project-item-info { display: flex; flex-direction: column; gap: 4px; }
+  </style><style>
+        @font-face {
+            font-family: 'NotoSans_online_security'; 
+            src: url(chrome-extension://llbcnfanfmjhpedaedhbcnpgeepdnnok/assets/fonts/noto-sans-regular.woff);
+        }
+
+        @font-face {
+            font-family: 'NotoSans_medium_online_security'; 
+            src: url(chrome-extension://llbcnfanfmjhpedaedhbcnpgeepdnnok/assets/fonts/noto-sans-medium.ttf);
+        }
+
+        @font-face {
+            font-family: 'NotoSans_bold_online_security'; 
+            src: url(chrome-extension://llbcnfanfmjhpedaedhbcnpgeepdnnok/assets/fonts/noto-sans-bold.woff);
+        }
+
+        @font-face {
+            font-family: 'NotoSans_semibold_online_security'; 
+            src: url(chrome-extension://llbcnfanfmjhpedaedhbcnpgeepdnnok/assets/fonts/noto-sans-semibold.ttf);
+        }
 </style></head>
 <body>
-<div id="root">
+<div id="root" style="display: block;">
 
 <!-- ── Navbar ─────────────────────────────────────────────────────── -->
-<header id="navbar">
+<header id="navbar" class="">
   <div class="nav-inner">
     <div class="nav-logo">
       <img src="./index_files/1c3b48e60d78266dcf3900932c6e5a9f.webp" alt="Certhus Logo">
@@ -810,7 +888,7 @@
 <!-- ── Services Strip ─────────────────────────────────────────────── -->
 <section id="services-strip">
   <div class="services-inner">
-    <div class="service-item reveal stagger-1">
+    <div class="service-item reveal stagger-1 visible">
       <div class="service-icon">
         <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
       </div>
@@ -819,7 +897,7 @@
         <div class="service-desc">Sites modernos, rápidos e 100% responsivos.</div>
       </div>
     </div>
-    <div class="service-item reveal stagger-2">
+    <div class="service-item reveal stagger-2 visible">
       <div class="service-icon">
         <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
       </div>
@@ -828,7 +906,7 @@
         <div class="service-desc">Apps personalizados para Android e iOS com alta performance.</div>
       </div>
     </div>
-    <div class="service-item reveal stagger-3">
+    <div class="service-item reveal stagger-3 visible">
       <div class="service-icon">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"></path></svg>
       </div>
@@ -843,7 +921,7 @@
 <!-- ── About ──────────────────────────────────────────────────────── -->
 <section id="about">
   <div class="about-inner">
-    <div class="reveal-left">
+    <div class="reveal-left visible">
       <div class="about-label">Sobre a Certhus</div>
       <h2 class="about-title">Soluções inteligentes para um mundo conectado.</h2>
       <p class="about-desc">
@@ -854,7 +932,7 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
       </a>
     </div>
-    <div class="reveal-right">
+    <div class="reveal-right visible">
       <div class="about-img-wrap">
         <img src="./index_files/photo-1498050108023-c5249f4df085" alt="Desenvolvimento de software">
       </div>
@@ -865,7 +943,7 @@
 <!-- ── Portfolio ──────────────────────────────────────────────────── -->
 <section id="portfolio">
   <div class="portfolio-inner">
-    <div class="portfolio-header reveal">
+    <div class="portfolio-header reveal visible">
       <div>
         <div class="portfolio-label">Portfólio</div>
         <h2 class="portfolio-title">Projetos que geram resultados.</h2>
@@ -875,14 +953,42 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
       </button>
     </div>
-    <div class="portfolio-grid" id="portfolio-grid"></div></div>
-  </div>
-</section>
+    <div class="portfolio-grid" id="portfolio-grid">
+    <div class="project-card reveal" style="background:linear-gradient(135deg,#1e3a8a,#1e1b4b)" onclick="openProjectDetails('1')">
+      <div class="card-img">
+        <img src="./index_files/photo-1551288049-bebda4e38f71" alt="CONNECT+">
+        <div class="card-img-overlay"></div>
+        <div class="card-badge">
+          <span>🔵</span>
+          <span>CONNECT+</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-subtitle">Plataforma de Gestão Empresarial</div>
+        <div class="card-tags"><span class="card-tag">Sistema Web</span><span class="card-tag">Gestão</span></div>
+      </div>
+    </div>
+    <div class="project-card reveal" style="background:linear-gradient(135deg,#111827,#1e3a8a)" onclick="openProjectDetails('2')">
+      <div class="card-img">
+        <img src="./index_files/photo-1526506118085-60ce8714f8c5" alt="FITZONE">
+        <div class="card-img-overlay"></div>
+        <div class="card-badge">
+          <span>🏋️</span>
+          <span>FITZONE</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-subtitle">Aplicativo de Treinos e Desempenho</div>
+        <div class="card-tags"><span class="card-tag">Aplicativo</span><span class="card-tag">Saúde</span></div>
+      </div>
+    </div></div></div>
+  </section></div>
+
 
 <!-- ── CTA ────────────────────────────────────────────────────────── -->
 <section id="cta">
   <div class="cta-inner">
-    <div class="cta-box reveal">
+    <div class="cta-box reveal visible">
       <div>
         <p class="cta-hint">Tem um projeto em mente?</p>
         <h2 class="cta-title">
@@ -901,7 +1007,7 @@
 <footer id="footer">
   <div class="footer-inner">
     <div class="footer-grid">
-      <div class="reveal stagger-1">
+      <div class="reveal stagger-1 visible">
         <div class="footer-logo">
           <img src="./index_files/1c3b48e60d78266dcf3900932c6e5a9f.webp" alt="Logo">
           <div class="footer-logo-text">
@@ -910,7 +1016,7 @@
           </div>
         </div>
       </div>
-      <div class="footer-col reveal stagger-2">
+      <div class="footer-col reveal stagger-2 visible">
         <h4>Navegação</h4>
         <div class="footer-nav-grid">
           <a href="https://preview--animated-web-page.lumi.ing/certhus-export.html#hero">Início</a>
@@ -920,13 +1026,13 @@
           <a href="https://preview--animated-web-page.lumi.ing/certhus-export.html#cta">Contato</a>
         </div>
       </div>
-      <div class="footer-col reveal stagger-3">
+      <div class="footer-col reveal stagger-3 visible">
         <h4>Serviços</h4>
         <a href="https://preview--animated-web-page.lumi.ing/certhus-export.html#">Criação de Sites</a>
         <a href="https://preview--animated-web-page.lumi.ing/certhus-export.html#">Aplicativos</a>
         <a href="https://preview--animated-web-page.lumi.ing/certhus-export.html#">Automação de Sistemas</a>
       </div>
-      <div class="footer-col reveal stagger-4">
+      <div class="footer-col reveal stagger-4 visible">
         <h4>Contato</h4>
         <span class="footer-contact-item">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
@@ -1080,23 +1186,6 @@ function closeMobileMenu() {
     ],
     "videos": [],
     "description": "Aplicativo fitness"
-  },
-  {
-    "id": 3,
-    "name": "SMARTFLOW",
-    "subtitle": "Automação de Processos Industriais",
-    "tags": [
-      "Automação",
-      "Indústria"
-    ],
-    "color": "linear-gradient(135deg,#312e81,#0f172a)",
-    "icon": "⚙️",
-    "cover": "./index_files/photo-1518432031352-d6fc5734fa38",
-    "images": [
-      "./index_files/photo-1518432031352-d6fc5734fa38"
-    ],
-    "videos": [],
-    "description": "Automação completa"
   }
 ]
 </script>
@@ -1183,5 +1272,6 @@ if(document.readyState === 'complete' || document.readyState === 'interactive') 
 </script>
 \n<script src="admin-dashboard.js"></script>
 
-</div>
-</body></html>
+
+
+<div id="certhus-admin-panel" style="display: none;"><div class="cadmin-sidebar"><div class="cadmin-brand">Certhus Admin</div><div class="cadmin-nav"><div class="cadmin-nav-item" data-tab="hero">🏠 Início (Hero)</div><div class="cadmin-nav-item" data-tab="services">⚙️ Serviços</div><div class="cadmin-nav-item" data-tab="about">ℹ️ Sobre</div><div class="cadmin-nav-item" data-tab="portfolio">💼 Portfólio</div><div class="cadmin-nav-item" data-tab="cta">📞 Contato</div><div class="cadmin-nav-item active" data-tab="advanced" style="margin-top:24px;border-top:1px solid #282c34;padding-top:16px;border-radius:0;">🚀 Publicar</div></div></div><div class="cadmin-main"><div class="cadmin-header">  <div style="font-size:18px;font-weight:600;">Editar Seção</div>  <button class="cadmin-btn-outline" id="cadmin-exit">Fechar Painel</button></div><div class="cadmin-content" id="cadmin-form-container"><h2>🚀 Publicar no Site Ao Vivo</h2><div class="cadmin-form-group" style="margin-top:16px;">  <label class="cadmin-label">URL da API (Vercel)</label>  <input type="text" id="api-url" class="cadmin-input" value="/api/save" placeholder="Ex: https://seusite.vercel.app/api/save">  <p style="color:#a0aabf;font-size:12px;margin-top:8px;">Se você está testando localmente (Live Server) ou em outra plataforma (como Lumi), digite a URL COMPLETA da sua Vercel acima. Se você já estiver acessando a Vercel, deixe apenas /api/save.</p></div><button id="btn-publish" class="cadmin-btn" style="background:#10b981;">Publicar Agora</button><div id="pub-status" style="margin-top:16px;font-size:14px;color:#60a5fa;">Processando e enviando para o servidor...</div></div></div></div></body></html>
